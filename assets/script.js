@@ -7,7 +7,7 @@ var cooldown1 = false;
 
 document.body.appendChild(audio);
 audio.src = "https://tahakara.dev/assets/lorem.mp3";
-audio.volume = 0.4;
+audio.volume = 0.47;
 
 
 function fade() {
@@ -23,7 +23,7 @@ function fade() {
             image.style.opacity = i / 100;
             i++;
         }
-    }, 100);
+    }, 200);
 };
 
 
