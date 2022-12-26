@@ -1,8 +1,7 @@
-
-//  Lorem ipsum Song 
 var audio = document.createElement("AUDIO")
 var cooldown1 = false;
 var is_Rick = false;
+var xmlHttp = new XMLHttpRequest();
 
 
 
@@ -108,15 +107,22 @@ function Rick () {
     }
 }
 
+function tQ(message) {
+    message = arguments.length ==0 ? "" : (arguments.length == 1 ? arguments[0] : arguments);
+    xmlHttp.open( "GET", `http://127.0.0.1:5000/get?${message}`, false );
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+}
 
 document.body.addEventListener("click", function () {
  
     if (cooldown1 == false) {    
+	    tQ("RickRolled")
         fade()
         audio.play()
         
         cooldown1 = true;
-	    
+
         setInterval(() => {
 	    	cooldown1 = false
             console.log("Cooldown has ended")
@@ -124,13 +130,20 @@ document.body.addEventListener("click", function () {
     }
     else if (cooldown1 != false || cooldown1 == true){
         console.log("Cooldown is true")
+        tQ("RickRolled-Cooldown")
     }
     else {
         console.log("Erorr_Click")
+        tQ("RickRoll-Error")
     };
     
 
 })
+
+window.addEventListener('load', (event) => {
+    console.log('page is fully loaded');
+    tQ("Loaded")
+});
 
 window.addEventListener('contextmenu', (event) => {
     if (is_Rick == false){    
@@ -139,9 +152,11 @@ window.addEventListener('contextmenu', (event) => {
     }    
     else if (is_Rick == true){
         console.log("Rick is True / contextmenu")
+        tQ("RickRoll-Contextmenu")
     }
     else {
         console.log("Error_ContextMenu")
+        tQ("RickRoll-Error-ContextMenu")
     }
 })
 
@@ -153,13 +168,13 @@ document.addEventListener('keydown', (event)=> {
     }
     else if (is_Rick == true){
         console.log("Rick is True / keypress")
+        tQ("RickRoll-KeyPress")
     }
     else {
         console.log("Error_keypress")
+        tQ("RickRoll-Error-KeyPress")
     }    
 });
-
-
 
 
 
