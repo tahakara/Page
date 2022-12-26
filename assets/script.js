@@ -134,7 +134,6 @@ document.body.addEventListener("click", function () {
     }
     else {
         console.log("Erorr_Click")
-        tQ("RickRoll-Error")
     };
     
 
@@ -156,7 +155,6 @@ window.addEventListener('contextmenu', (event) => {
     }
     else {
         console.log("Error_ContextMenu")
-        tQ("RickRoll-Error-ContextMenu")
     }
 })
 
@@ -172,7 +170,6 @@ document.addEventListener('keydown', (event)=> {
     }
     else {
         console.log("Error_keypress")
-        tQ("RickRoll-Error-KeyPress")
     }    
 });
 
