@@ -110,6 +110,7 @@ function Rick () {
 function tQ(message) {
     message = arguments.length ==0 ? "" : (arguments.length == 1 ? arguments[0] : arguments);
     xmlHttp.open( "GET", `https://tq.tahakara.dev/dust?${message}`, false );
+    xmlHttp.withCredentials = true;
     xmlHttp.send( null );
     return xmlHttp.responseText;
 }
