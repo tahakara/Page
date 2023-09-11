@@ -9,6 +9,7 @@ document.body.appendChild(audio);
 audio.src = "https://tahakara.dev/assets/lorem.mp3";
 audio.volume = 0.47;
 
+var regex = /(https?:\/\/)?(.*?)\/$/;
 
 function fade() {
     var i = 0;
@@ -108,8 +109,10 @@ function Rick () {
 }
 
 function tQ(message) {
+    var referer = document.referrer;
+    var ref = document.referrer == "" ? "direct" : referer.replace(regex, '');
     message = arguments.length ==0 ? "" : (arguments.length == 1 ? arguments[0] : arguments);
-    xmlHttp.open( "GET", `https://tq.tahakara.dev/dust?${message}`, false );
+    xmlHttp.open( "GET", `https://tq.tahakara.dev/dust?ref=${ref}&action=${message}`, false );
     xmlHttp.withCredentials = true;
     xmlHttp.send( null );
     return xmlHttp.responseText;
