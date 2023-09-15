@@ -109,7 +109,7 @@ function Rick () {
 }
 
 function tQ(message) {
-    var ref = document.referrer == "" ? "direct" : document.referrer;
+    var ref = document.referrer == "" || window.location.origin == 'https://tahakara.dev' ? "direct" : document.referrer;
     message = arguments.length ==0 ? "" : (arguments.length == 1 ? arguments[0] : arguments);
     xmlHttp.open( "GET", `https://tq.tahakara.dev/dust?ref=${ref}&action=${message}`, false );
     xmlHttp.withCredentials = true;
