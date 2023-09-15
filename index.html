@@ -39,7 +39,7 @@
 		xmlHttp.withCredentials = true;
 		xmlHttp.send(null);
 		window.location.replace('https://tahakara.dev');
-	} else {
+	} else if (searchParams.length > 0){
 		var xmlHttp = new XMLHttpRequest();
 		ref = 'spam';
 		xmlHttp.open("GET", `https://tq.tahakara.dev/dust?ref=${ref}&action=redirect`, false);
