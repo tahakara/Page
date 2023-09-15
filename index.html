@@ -15,33 +15,39 @@
         <meta name="og:title" content="Hello There">
         <meta name="og:description" content="Ha Ha Go Brr">
         <script>
-	        var searchParams = new URLSearchParams(window.location.search);
-	        var ref;
+	var searchParams = new URLSearchParams(window.location.search);
+	var ref;
 
-	        if (searchParams.length > 0 && document.referrer == '') {
-		        var refParam = searchParams.get('ref');
-		        if (refParam !== null) {
-  		            var xmlHttp = new XMLHttpRequest();
-		            switch(refParam) {
-  		            	case link:
-		            		ref = 'https://linkedin.com/';
- 		            	case twitch:
-			            	ref = 'https://twitch.tv/';
-  		            	default:
-		            		ref = 'unknown';
-        		    }
-		            xmlHttp.open("GET", `https://tq.tahakara.dev/dust?ref=${ref}&action=redirect`, false);
-		            xmlHttp.withCredentials = true;
-    	            xmlHttp.send(null);
-	        	    window.location.href = 'https://tahakara.dev';
-	            } else {
-			        var xmlHttp = new XMLHttpRequest();
-			        ref = 'spam';
-		    	    xmlHttp.open("GET", `https://tq.tahakara.dev/dust?ref=${ref}&action=redirect`, false);
-  		    	    window.location.href = 'https://tahakara.dev';
-		        }
-	        }
-        </script>
+	if (searchParams.has('ref') && document.referrer == '') {
+		var refParam = searchParams.get('ref');
+		var xmlHttp = new XMLHttpRequest();
+
+		switch (refParam) {
+			case 'link':
+				ref = 'https://www.linkedin.com/';
+				break;
+	
+			case 'twitch':
+				ref = 'https://www.twitch.tv/';
+				break;
+	
+			default:
+				ref = 'unknown';
+		}
+		
+		xmlHttp.open("GET", `https://tq.tahakara.dev/dust?ref=${ref}&action=redirect`, false);
+		xmlHttp.withCredentials = true;
+		xmlHttp.send(null);
+		window.location.href = 'https://tahakara.dev';
+	} else {
+		var xmlHttp = new XMLHttpRequest();
+		ref = 'spam';
+		xmlHttp.open("GET", `https://tq.tahakara.dev/dust?ref=${ref}&action=redirect`, false);
+		xmlHttp.withCredentials = true;
+		xmlHttp.send(null);
+		window.location.href = 'https://tahakara.dev';
+	}
+</script>
     </head>
     <body>
         <div class="alpha">Please Click Picture</div>
