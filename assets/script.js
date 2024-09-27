@@ -120,7 +120,7 @@ function tQ(message) {
 document.body.addEventListener("click", function () {
  
     if (cooldown1 == false) {    
-	    tQ("RickRolled")
+	    //tQ("RickRolled")
         fade()
         audio.play()
         
@@ -133,7 +133,7 @@ document.body.addEventListener("click", function () {
     }
     else if (cooldown1 != false || cooldown1 == true){
         console.log("Cooldown is true")
-        tQ("RickRolled-Cooldown")
+        //tQ("RickRolled-Cooldown")
     }
     else {
         console.log("Erorr_Click")
@@ -144,7 +144,7 @@ document.body.addEventListener("click", function () {
 
 window.addEventListener('load', (event) => {
     console.log('page is fully loaded');
-    tQ("Loaded")
+    //tQ("Loaded")
 });
 
 window.addEventListener('contextmenu', (event) => {
@@ -154,7 +154,7 @@ window.addEventListener('contextmenu', (event) => {
     }    
     else if (is_Rick == true){
         console.log("Rick is True / contextmenu")
-        tQ("RickRoll-Contextmenu")
+        //tQ("RickRoll-Contextmenu")
     }
     else {
         console.log("Error_ContextMenu")
@@ -169,7 +169,7 @@ document.addEventListener('keydown', (event)=> {
     }
     else if (is_Rick == true){
         console.log("Rick is True / keypress")
-        tQ("RickRoll-KeyPress")
+        //tQ("RickRoll-KeyPress")
     }
     else {
         console.log("Error_keypress")
