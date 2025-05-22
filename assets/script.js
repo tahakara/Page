@@ -1,33 +1,5 @@
-var audio = document.createElement("AUDIO")
-var cooldown1 = false;
-var is_Rick = false;
-var xmlHttp = new XMLHttpRequest();
-
-
-
-document.body.appendChild(audio);
-audio.src = "https://tahakara.dev/assets/lorem.mp3";
-audio.volume = 0.47;
-
-var regex = /(https?:\/\/)?(.*?)\/$/;
-
-function fade() {
-    var i = 0;
-    var image = document.getElementsByClassName("sence")[0];
-    image.style.opacity = 0;
-    
-    var k = window.setInterval(function() {
-      
-        if (i >= 200) {
-            clearInterval(k);
-        } else {
-            image.style.opacity = i / 100;
-            i++;
-        }
-    }, 200);
-};
-
-oh_honey = [
+// ASCII Art array
+const OH_HONEY = [
     "@@@@@###@#@@#####@@@@@@@@@@@@@@@@@@@@@@@@@#@@@@@#@\n@;::::::::;:::::;'++##@@@@@@#####@####+++';;;;:;;#\n@::::::,:::::::::;++####@@@@###@#@@#####+;;;;::;;#\n@::::::::::;;;;;;;+####@@@@@@@#@@@@#####+;;;;;;;;#\n@::::::::::::;;;;;++####@@@@@@##@#######+';;;;;;;#\n@::::::::::::::;;;++#############++''+##+';;;;;;;#\n@:,:,:,:;::::;:;:;####+++++###++'';;;'++'';;;;;;;#\n@::,::::;:::;::;;;##++++++++++'''';;;'++'';;;;;;;#\n@:,,,,,::::;;::;;;##++++++++++'''';;;;++';;;;;;;;#\n@:,,,,::::;;;::;;;+#++++++++++''''';;;++';;;;:;;;#\n@:,,,,:::;;;;:::;;+#++++++++++''''';;;++;;;;;;;;;#\n@,,,,,::::::::::;;'+++++++++'''''''';;'+;;:;;;;;;#\n@,:,:,::::::::::;'++++++++++'++'''';;;'';;:;;;;;;#\n@:::::::::::::::;'+++++####++++++'''';''';;;;;;;;#\n@::::::::::,:::::'+'++++++##+++##+++';;;';:;;;;::#\n@:::,:::::::::::;'+''++++#+++''+++''';;';;::;:;;;#\n@:,::::::::::::::;+''+++#++++';'+++'';;';;;;;::;:#\n@:,:,:::::,:::::::++'++++++++';;''';;;;;:::::::;:#\n@,,,,:::,:,:,:,,::'+'++++++++';;'''';;;;:::;:::::#\n@,,,,:::,:,,::,:::;;'++++++++';'''''';;::::::::::#\n@,,,::::,:::::,:::;;'++++++++'''''''';:::::::::::#\n@,,,::::,,::,:,:::;;;++++++#+''''''';;::::::::;;;#\n#:::::::::::::::::;;;++++++++''''''';;::::::::;;;#\n@,,,::::,,,,,,,,,:;;:'++++++++'''''';+;:::::::;;:#\n@,,,::::,,:,,,,,,:;;:;+++++#++''++'';'+'::::::;;;#\n@,,,:::,,,:,:,::::;;::'+++++++'''''';;##':::::;;;#\n@,,::::,,,,,,,:,::;::;++++++++''''';;;###+';:;;;;#\n@::::::,,,,,,,:,::;:;++++++++'''''';;;######+';;;#\n@,,:::,,,,,,,,,,::;;+''+++++++'''''';;####@@#####@\n@:::::,,,,,,,,,,:;'++'+++++++++''''';;###@@@@@@##@\n@:::::,,,::::::;+++++'#++####+++''';;;##@@@@@@@@@@\n@,:::::::::::;++++#+''#+++'#++++++';;;##@@@@@@@@@@\n@:::::::,::'++######'+####++#++++';;;;##@@@@@@@@@@\n@::::::::;+++###@@##'+++##+++++++';;;'#@@@@@@@@@@@\n@::::,:;+++###@#@@#@''#+++'+++++';;;;#@@@@@@@@@@@@\n@::::;+++###@@@@@@#@+++##+'++++';;;;;#@@@@@@@@@@@@\n@::;+++###@@@@@@@@#@#+###+'+++'';;;;'@@@@@@@@@@@@@\n@::;+####@@@@@@@@@@@#+##++'+''';;;;;#@@@@@@@@@@@@@\n",
     "@@@@@###@###@##@@###@@#@@@@@@@@@@@@#@@@@@@@@##@@#@\n@;::::::::;:::::::::;'''+'+######@#+'';;;;;;;::;;#\n@:::::,,::::::::::::;'''++########@#++'';;;;:::;;#\n@::::::::::::::::;;;;'+++++##@###@@###+++';;;;;;;#\n@::,:,,::::::::::;;;'+##++###@@##@@#####++;;;;;;;#\n@:::::::;;::::::;;;'#######@##@@##@#####+'';;;;;;#\n@:,,,:,:;:::::::::'####################++'';;;;;;#\n@:,,,:::::::::::::'#######################';;;;;;#\n@:,,,,,:::::::::;;;+######################';;:;;;#\n@:,,,,,:::;:::::;;'+########@#####@#######';;;;;;#\n@,,,,,::::;:::::;;'+##########@@##@@#####+;;;;;;;#\n@,,,,,::::::::::;;'+###################++';;;;;;;#\n@,,,:,::::::::::;''########++++#######+''';;;;;;;#\n@,:::,::::::::::;''#####++++++++++++';;;'';;;;;;;#\n@::::::::::,::::;'+#####++++++'''''';;;;;;;;;;;::#\n@,,:,:::::::::::;'+####+++++++'''''''';;;;::::;;;#\n@::::::::::::::::'+###+++++++++'''''''';;;;;;::;:#\n@:,:,:::::::::::'++###+++++++++''''';;;;:;:::::;:#\n@,,,,:::,:,,,:,:''+###++++++++++''''''';:::;:::::#\n@,,,,:::,:,:::,:;+++++++++##+++++'''';;;:::::::::#\n@,,,,:::,:,::::::+'++++++++++###++'++++'::::,::::#\n@,,,::::,,:,,,,::'++++++++++++###+'++'';:::::::::#\n@::,:::::::::::::;+++++++++++#++++;'++;:::::,::::#\n@,,,::::,,,,,,,,,:'+++++++++'+++++;;'';:::::::;;:#\n@,,,::::,,:,,,,,,:;;++++++++''++++;;;;;::::::::::#\n@,,::::,,,:,:,:::;;;++++++++++++++;''';::,::,::::#\n@,,::::,,,,,,,,,:;;;++++++++++#+++'''':::::::::::#\n@:::::::,,,,,,,,::;:+++++++++++#++''';::::::::;::#\n@,,:::,,,,,,,,,,:;;:'++++++++++++'''';::::::::;::#\n@:::::,,,,,,,,,,::;:'+++++++++++''''';:::::::;;::#\n@:::::,,,:::::::;;;;'+++++++++#++''''';:;::::;;;:#\n@,::::::,:,:::,,:;;'++++++++++++''''+#':;::::;;;:#\n@:::::,:,:,,,:,,:;+'+##+++'+++++''';+##+;:;;;;;;:#\n@::::,,,,,,:,:::;++'#+++#++++++'''';+####+;;;;;;;#\n@::::,:,,,::::;++++'#++++++++++'''';+######+';;;;#\n@::::::::::;'#####''#++#++++#+++'';;+###@@@###+';#\n@::::,,:::++######''#++#++'++++'+;;;###@@@@@@@##+@\n@::::,:;++########;'++#+++'+++++';;;###@@@@@@@@@@@\n",
     "@##@@################@###@@@@@@@@@@@####@@@######@\n@::::::::::::::::::::;;::;;;;;;;;;;;;;;;;;;;:::;;#\n@:::::,,:::::,:::::::;;:::;;;;;''';;;;;;;;;;:::;;#\n@:::::::::::::::::;;;;;;;;;;'++###+++';;;;;;;;;;;#\n@:::,,,::::::::::;;;;;;;;;'++#########+;;;;;;;;;;#\n@::::::::::::::::;;;;;;;'+#####++#######';;;;;;;;#\n@:,,,:,:::::::::::::;;;'###++#########@##'';;;;;;#\n@:,,,::::::::::::::;;;'+##+##@########@##++';;;;;#\n@:,,,,,::::::::::::;;;'#'+###@############++';;;;#\n@:,,,,,:::::::::;::;;+#++#################+++';;;#\n@,,,,,::::;::::::;;;+#+###################++''';;#\n@,,,,,:::::::::::;;;'######################+++';;#\n@,,,,,::::::::::;;;'+##########@@##########+#++;;#\n@,:,:,:::::::::::;'++###########@@#########+++';;#\n@:::,::::::,:::::;'+##############@@#########+;;:#\n@,,,,:::::::::::;''+#################@@@##@#+';;;#\n@:::,::::::::::::++#########################';;;:#\n@:,:,:::::,::::::+############+++++++++###+;:::::#\n@,,,,:::,,,,,,:,:+###########++++++''''''';;:::::#\n@,,,,:::,:,:::,,:+###########++++++''''';;;::::::#\n@,,,,:::,:,:::,::'+'#########++++++'''';;;;::::::#\n@,,,::::,,::,:,,:;'+++#####++++++++'''';;;;::::::#\n@,,,:::::::::::::;+++++###++++++++'''';';;;:,::::#\n@,,,:::,,,,,,,,,,;'+++++##++++++++''''''';::,::::#\n@,,,:::,,,:,,,,,,:'++++++++++++++#++++'''';:,::::#\n@,,,:::,,,:,,,:::;;++++++++++++++++##++++;::,::::#\n@,,::::,,,,,,,,,:;;'++++++++++'+++++++'+'::::::::#\n@:,:::,,,,,,,,,,,:;;+++++++++++''''''+;;;::::::::#\n@,,:::,,,,,,,,,,:;:;+++++++++++'';''++;;;::::::::#\n@:::::,,,,,,,,,,:::;+++++++++++''''++';;:::::;:::#\n@,::::,,,,:::::::::;'++++++++++'''+++';;:::::;;::#\n@,::::,,,:,:,,,,::;'+'+++++++++'''++++';:::::;;::#\n@:::::,,,,,,,,,,:;;'++##++'+++++++++#+'::::::;;;:#\n@::::,,,,,,,,::::;''++++##'+++++++++';;;;:;::;;;:#\n@::::,:,,,,,,:,:;;'+++++++'++++++#++'':::::::;;;:#\n@::::::,:,:,,:,;+;+++'+#++'++++++'''''::::::;;;;:#\n@::::,,,:,,,,:'++'+++++#++'++++++++'###':::::;;;:#\n@::::,,,:,::'++++'++++++++'+++++'''+#####+;:;;;;:#\n",
@@ -88,95 +60,324 @@ oh_honey = [
     "@@#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##@@@###@##@\n@:::::;;::::::;;;;;;;:;;;;;;;;::;;;::::::::;;;;;;#\n@:::::;;:::,::::;;;;;;;;;::::;;;;;;;;;:::;;;;;;;;#\n@:::::::::::::::::;;;:;;:::::;::;;;:::::,:::;;;;;#\n@:::::::::::::::::;;;::;::::::::;;;:::,:::::;;;;;#\n@::::::,:;:::::::::::;:;;:::;:;;:;;;::,,::::;;;;;#\n@::::::,,:::,::::::;;:::;::::::;;;:;;;:,::;;:;;;;#\n@:::::,,:::::::::::;::::::;:::::;;:;;:;:,:;:::;:;#\n@:::::,,,,::::::::;'+++;::;:::::;;;;::;;:;:::,:::#\n@::::,,,,,::::::::'+###+';;:::::;;;;;:;:;;:::,,::#\n@:::::,,::::::,:,,;+++'++:::;::;;;::;;;;:;::,,,::#\n@::::::::;::::,,::''';;'+:::;;;;:;::;::;:;::,,,::#\n@::::::::::::;::::'''';'+::::;:;;;::::;;;;;:,::::#\n@:::::::::::::;:::;+''';':::;;::;;;::::;:::::::::#\n@;::::;:::::;:;;::;'';;;';:;;:;::;;;;;:::::,::,,,#\n@;::::;:::::;;;;::;'';''';;;::;;;;;:;;;;;::,::,,,#\n@::;::;::;;;::;;::;'''''';;;:::;;;;:;;:;;:::::,,:#\n@:;:;;;;;;;:::;;;:;''''++;;;:::;;;;:;:;::;;:::::;#\n@:;:::;;::;;::::;:;'++'''';;;:;;;;;;;:;::;::;;:::#\n@;;:::;:::;;:;:;;'+'++'''###+;;;;;;;;:;::;:::;:::#\n@;;::;;;:;;;;;;;###;'''''######;;;;;;;;::;:::;:,,#\n@::;;;:;;;::;'+####';'';'######+;;;;;;;;::;:;;;::#\n@;;;;:;;;;:;;######'''';+#######;;;;::;;:,:;:::::#\n@::;;:::;::;;#######+'+'########;;;;:::::::;:;:::#\n@::;::::;;:;;#@######+''########';;;;:;::,,::::::#\n@::;;:::;;;;;#@@##@##+++########';;;;;;;:::::::::#\n@::;;:::;;;;;#@#+#@@#+++########+;;;;;:;:::;:::::#\n@::;;;;;;;;;;##''#@@@+++#########;;;;;:;:::;:::::#\n@::;;;;;;;;;;##''+@##+++#########;;;;;;;:::;:::::#\n@::;;:;;;;;;;##''#####++######@###;;;:;;:::;;;::;#\n@;;;;;;;;;;;'#++'#@####++#####@@##;;;;;;;;;;;;;;;#\n@;;;;;;;;;;;'++#+@@###+++####@@@#+;;;;;;;;;;;;;;;#\n@;;;;;;;;;;;'###@@@@##+++#@@@@@#++';;;;;;;;;;;;;;#\n@;;;;;;;;;;;;###@@@@@##++#@@@@@#+'';;;;;;;;;;;;;;#\n@;;;;;;;;;;;;+#+#@@@@#####@@#@+@#'';;;;;;;;;;;;;;#\n@;;;;;;;;;;;;;;;#@@@@@@#++#@@@+;;#';;;;;;;;;;;;;;#\n@;;;;;;;;;;;;;;;#@@@@@#'''+#@@#;;;;;;;;;;;;;;;;;;#\n@;;;;;;;;;;;;;;'#@@@@@#''''+@@#;;;;;;;;;;;;;;;;;;#\n",
     "@@#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##@@@###@##@\n@::::::;::::::;;;;;;::;;;;;;;;::;;;::::::::;;;;;;#\n@::::::;::::::::;;;;;;;;;::::;;;;;;;;;:::;;;;;;;;#\n@:::::::::::::::::;;;:;;:::::;::;;;:::::,:::;;;;;#\n@:::::::::::::::::;;;::;::::::::;;;:::,:::::;;;;;#\n@::::::,:;:::::::::::;;;;:::;:;;:;;;::,,::::;;;;;#\n@::::::,,:::,::::::;;:::;::::::;;;:;;;:,::;;:;;;;#\n@:::::,,:::::::,:::;::::::;:::::;;:;;:;:,;;:::::;#\n@:::::,,,,:::::,:::::;;;::;:::::;;;;::;;:;:::::::#\n@:::::,,,,:::::::::;''+++;;:::::;;;:;:;:;;:::,,::#\n@:::::,,::::::,:,,:;+###++:;;::;;;::;;;;:;::,,,::#\n@:::::,::;::::,,:,:;''';;+::;;;;:;::;::;:;::,,,::#\n@::::::::::::;:,:,:'''';;+;::;:;;;::::;;;;;:,::::#\n@:::::::::::::;::::;'+''''::;;::;;;::::;:::::::::#\n@;::::;;::::;:;:::;;'''';';;;:;::;;;;;:::::,::,,,#\n@;::::;:::::;;;;::;;''''';;;::;;;;;:;;;;;::,:::,,#\n@:;;::;::;;;::;;::;;;'''+;;::::;;;;:;;:;;:::::,,:#\n@:;:;;;;;;;::::;;:;;;'''+;;;:::;;;;:;:;::;;:::::;#\n@:;:::;;::;;::::;:;;;++'+;;;;:;;;;;;;:;::;::;;;::#\n@;;:::;:::;;:;:;;:;;;++';;+;;;;;;;;;;:;::;:::;:::#\n@;;::;;;:;;;;;;;;'+#;++';;###';;;;;;;;;::;:::;::,#\n@::;;;:;;;::;;;;+###;''';;#####+;;;;;;;;::;:;;;::#\n@;;;;:;;;;:;;;'#####;;';''######+;;;::;;:,:;:::::#\n@::;;:::;:::;;+######++''########;;::::;:::;:;:::#\n@::;::::;;::;;#######++'+########;;;;:;;:::::::::#\n@::;;:::;:;;;;###@##@++++########';;;;;;:::::::::#\n@::;;:::;;;;;;#@@@#''++++########+;;;;:;:::;:::::#\n@::;;;;;;;;;;;#@##'++#'++#########;;;;:;:::;:::::#\n@::;;;;;;;;;;;#@@#'++''++#########;;;;;;:::;::::;#\n@::;;:;;;;;:;'#@#+''+#+++#########;;;;;;:::;;;::;#\n@;;;;;;;;;;;;#####+@@##++######@##+;;;;;;;;;;;;:;#\n@;;;;;;;;;;;;######@@##+++#####@@@#;;;;;;;;;;;;;;#\n@;;;;;;;;;;;;####@@@####++#####@@@#;;;;;;;;;;;;;;#\n@;;;;;;;;;;;;+###@@@###++##@#@@@@@#;;;;;;;;;;;;;;#\n@;;;;;;;;;;;;;+###@@@##++##@##@@@@#;;;;;;;;;;;;;;#\n@;;;;;;;;;;;;;;;;#@@@##+#++#@@@@@@++';;;;;;;;;;;;#\n@;;;;;;;;;;;;;;;;#@@@###++'+#@@@@#+++';;;;;;;;;;;#\n@;;;;;;;;;;;;;;;;#@@@@#'''''#@#@'+++'';;;;;;;;;;;#\n",
     "@@#@@#@@@@@@@@@@@@@#@@@@@@@@@@@@@@@@@@##@@@#@#@##@\n@::::::;::::::;;:;;;;:;;;;;;;;::;;;::::;:::;;;;;;#\n@::::::;:::::::::;;;;;;;;::::;;;;;;;;;:::;;;;;;;;#\n@::::::::::::::::::;;:;;:::::;::;;;:::::,:::;;;;;#\n@:::::::::::::::::;;;:;;::::::::;;;:::,:::::;;;;;#\n@:;::::::;:::::::::::;:;;:::;:;;:;;;::,,::::;;;;;#\n@::::::,,:::,::::::;;:::;::::::;;;:;;;:,::;;:;;;;#\n@:::::,,,::::::::::;::;'+';:::::;;:;;;;:,:;:::;:;#\n@:::::,,,,:::::,:::::'++##+;::::;;;;::;;:;:::,::;#\n@::::,,,,,::::::::::;'##+++'::::;;;;;:;:;;:::,,::#\n@:::::,,::::::,:,,::;''';;'';::;;;::;;;;:;::,,,::#\n@:::::,,::::::,,:,::;+''';;';;;;:;::;:;;:;::,,,::#\n@::::::::::::::::,:;;'++''';:;:;;;;:::;;;;;:,::::#\n@::::::::::::::::::;:;''';;';;::;;;::::;:::::::::#\n@;::::;:::::::;:::;;:'''';;;;:;::;;;;;:::::,::,,,#\n@;::::;:::::;;;;::;;;;'''';;::;;;;;:;;;;;::,:::,,#\n@:;;::;::;;;::;;::;;;;;''';;:::;;;;:;;:;;:::::,,:#\n@:;;;;;;;;;:::;;;:;;;;;''';''::;;;;:;;;:;;;:::,:;#\n@:;:::;;::;:::::;:;;;';'''';###';;;;;:;::;::;;;::#\n@;;:::;:::;;:;:;::;'##;'''';#####+;;;:;::;:::;:::#\n@;;::;;;:;;;;;;;;'+###;;;';'######+;;;;::;:::;:::#\n@::;;;:;;;::;;;:;#####''';;########;;;;;::::;;;::#\n@;;;;:;;;;::;;::'###@##++'+########;;:;;:::;:::::#\n@::;::::;:::;;::+######+''+########;;:;;:::;:;:;:#\n@::;::::;;::;;;:+######++++########';:;;:::::::::#\n@::;::::;:;:;;;;+#######+++########+;;;;:::::::::#\n@::;::::;;;;;;:;+#####@#+++########+;;:;:::::::::#\n@::;;;;;;;;;;;:;'@@###@#+++#########;;;;:::;:::::#\n@::;;;;;;;:::;;:'##@##@#+++####@@###;;;;:::;::::;#\n@::;;:;;;:::;;::##@@#@##+++######@##;;;;:::;;;::;#\n@;;;;;;;;;;;;;;;+#@@@@##++++###@@@##';;;;;;;;;;;;#\n@;;;;;;;;;;;;;;''+@@@@##++++@#++####;;;;;;;;;;;;;#\n@;;;;;;;;;;;;;;''+@@@@@##+++#++''##;;;;;;;;;;;;;;#\n@;;;;;;;;;;;;;;''+@@@@@##+####+''##;;;;;;;;;;;;;;#\n@;;;;;;;;;;;;;;;'##@@@@####+#@+'+#;;;;;;;;;;;;;;;#\n@;;;;;;;;;;;;;;;';+@@@@##'''+@@##;;;;;;;;;;;;;;;;#\n@;;;;;;;;;;;;;;;;;#@@@@@#'''+@@@#;;;;;;;;;;;;;;;;#\n@;;;;;;;;;;;;;;;;;#@@@@@#''''#@##;;;;;;;;;;;;;;;;#\n",  
-]
+];
+// Constants and Initialization
+const AUDIO_SRC = "https://tahakara.dev/assets/lorem.mp3";
+const AUDIO_VOLUME = 0.47;
+const COOLDOWN_DURATION = 46000; // 46 seconds
+const TRACKING_ENDPOINT = "https://dust.tahakara.dev/whisk";
+// State variables
+let betaCounter = 0;
+let cooldownActive = false;
+let isRickActive = false;
 
-let Beta = 0;
+// Keyboard tracking variables
+let keyPressStartTime = {};
+let mouseTrackingActive = false;
+let mouseStartPosition = { x: 0, y: 0 };
 
-function Rick () {
-    if (Beta<60){
+// Create audio element
+const audio = document.createElement("audio");
+audio.src = AUDIO_SRC;
+audio.volume = AUDIO_VOLUME;
+document.body.appendChild(audio);
+
+// Utility Functions
+/**
+ * Fade in an element with class "sence"
+ */
+function fadeIn() {
+    const image = document.getElementsByClassName("sence")[0];
+    if (!image) return;
+    
+    let opacity = 0;
+    image.style.opacity = 0;
+    
+    const fadeInterval = setInterval(() => {
+        if (opacity >= 2) {
+            clearInterval(fadeInterval);
+        } else {
+            image.style.opacity = opacity / 100;
+            opacity++;
+        }
+    }, 200);
+}
+
+/**
+ * Display ASCII art in console in sequence
+ */
+function playRickRoll() {
+    if (betaCounter < 60) {
         console.clear();
-        console.log(oh_honey[Beta])
-        Beta= Beta+1
-        setTimeout(Rick, 100);
-    }
-    else if (Beta>=60){
-        Beta= 0
-        setTimeout(Rick, 10);
-    }
-    else{
-        console.log("Error_Rick -'Never gonna give you up\n Never gonna let you down\n Never gonna run around and desert you\n Never gonna make you cry\n Never gonna say goodbye\n Never gonna tell a lie and hurt you'")
+        console.log(OH_HONEY[0]); // Only one element in array now
+        betaCounter++;
+        setTimeout(playRickRoll, 100);
+    } else {
+        betaCounter = 0;
+        setTimeout(playRickRoll, 10);
     }
 }
 
-function tQ(message) {
-    var ref = document.referrer == "" || window.location.origin == 'https://tahakara.dev' ? "direct" : document.referrer;
-    message = arguments.length ==0 ? "" : (arguments.length == 1 ? arguments[0] : arguments);
-    xmlHttp.open( "GET", `https://tq.tahakara.dev/dust?ref=${ref}&action=${message}`, false );
-    xmlHttp.withCredentials = true;
-    xmlHttp.send( null );
-    return xmlHttp.responseText;
+/**
+ * Get current timestamp in ISO format YYYY-MM-DD HH:MM:SS
+ * @returns {string} Formatted timestamp
+ */
+function getCurrentTimestamp() {
+    const now = new Date();
+    const year = now.getUTCFullYear();
+    const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(now.getUTCDate()).padStart(2, '0');
+    const hours = String(now.getUTCHours()).padStart(2, '0');
+    const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(now.getUTCSeconds()).padStart(2, '0');
+    
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-document.body.addEventListener("click", function () {
- 
-    if (cooldown1 == false) {    
-	    //tQ("RickRolled")
-        fade()
-        audio.play()
-        
-        cooldown1 = true;
-
-        setInterval(() => {
-	    	cooldown1 = false
-            console.log("Cooldown has ended")
-	    }, 46000);
-    }
-    else if (cooldown1 != false || cooldown1 == true){
-        console.log("Cooldown is true")
-        //tQ("RickRolled-Cooldown")
-    }
-    else {
-        console.log("Erorr_Click")
+/**
+ * Track user actions by sending data both in query string and JSON body
+ * @param {Object} params - Parameters to track
+ */
+function trackAction(params = {}) {
+    const referrer = document.referrer === "" || window.location.origin === 'https://tahakara.dev' 
+        ? "direct" 
+        : document.referrer;
+    
+    // Add common parameters
+    const trackingData = {
+        ...params,
+        ref: referrer,
+        user: null,
+        timestamp: getCurrentTimestamp()
     };
     
+    // Build query string
+    const queryString = Object.keys(trackingData)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(trackingData[key])}`)
+        .join('&');
+    
+    // Send tracking data with both query params and JSON body
+    fetch(`${TRACKING_ENDPOINT}?${queryString}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(trackingData)
+    }).catch(error => console.error(error));
+}
 
-})
-
-window.addEventListener('load', (event) => {
-    console.log('page is fully loaded');
-    //tQ("Loaded")
+// Mouse Movement Tracking
+document.addEventListener('mousedown', (event) => {
+    mouseTrackingActive = true;
+    mouseStartPosition = { x: event.clientX, y: event.clientY };
+    
+    trackAction({
+        action: 'mouse_down',
+        pos_x: event.clientX,
+        pos_y: event.clientY,
+        button: event.button
+    });
 });
 
+document.addEventListener('mouseup', (event) => {
+    if (mouseTrackingActive) {
+        mouseTrackingActive = false;
+        trackAction({
+            action: 'mouse_movement',
+            start_x: mouseStartPosition.x,
+            start_y: mouseStartPosition.y,
+            stop_x: event.clientX,
+            stop_y: event.clientY,
+            duration: Date.now() - (event.timeStamp || Date.now()),
+            button: event.button
+        });
+    }
+});
+
+document.addEventListener('mousemove', (event) => {
+    // Throttle mouse move events to reduce server load
+    if (!window.mouseMoveThrottle) {
+        window.mouseMoveThrottle = setTimeout(() => {
+            window.mouseMoveThrottle = null;
+            trackAction({
+                action: 'mouse_position',
+                pos_x: event.clientX,
+                pos_y: event.clientY
+            });
+        }, 500); // Track position every 500ms
+    }
+});
+
+// Keyboard Tracking
+document.addEventListener('keydown', (event) => {
+    const keyCode = event.code || event.key;
+    if (!keyPressStartTime[keyCode]) {
+        keyPressStartTime[keyCode] = Date.now();
+        
+        trackAction({
+            action: 'key_down',
+            key: keyCode
+        });
+    }
+    
+    // Special handling for 'KeyI' for Rick Roll activation
+    if (!isRickActive && event.code === 'KeyI') {
+        isRickActive = true;
+        playRickRoll();
+        trackAction({ 
+            action: 'rick_roll_activated', 
+            trigger: 'KeyI' 
+        });
+    }
+});
+
+document.addEventListener('keyup', (event) => {
+    const keyCode = event.code || event.key;
+    const startTime = keyPressStartTime[keyCode];
+    
+    if (startTime) {
+        const duration = Date.now() - startTime;
+        trackAction({
+            action: 'key_press',
+            key: keyCode,
+            duration: duration
+        });
+        
+        // Clear the start time
+        delete keyPressStartTime[keyCode];
+    }
+});
+
+// Scroll Tracking
+let lastScrollPosition = window.scrollY;
+let scrollTimeout;
+
+window.addEventListener('scroll', () => {
+    clearTimeout(scrollTimeout);
+    
+    scrollTimeout = setTimeout(() => {
+        const newPosition = window.scrollY;
+        const distance = Math.abs(newPosition - lastScrollPosition);
+        
+        if (distance > 50) { // Only track significant scrolls
+            trackAction({
+                action: 'scroll',
+                start_y: lastScrollPosition,
+                stop_y: newPosition,
+                distance: distance
+            });
+            
+            lastScrollPosition = newPosition;
+        }
+    }, 200); // Throttle scroll events
+});
+
+// Click Events
+document.body.addEventListener("click", (event) => {
+    trackAction({
+        action: 'click',
+        pos_x: event.clientX,
+        pos_y: event.clientY,
+        target: event.target.tagName
+    });
+    
+    if (!cooldownActive) {
+        fadeIn();
+        audio.play();
+        trackAction({ action: 'audio_played' });
+        
+        cooldownActive = true;
+        setTimeout(() => {
+            cooldownActive = false;
+            console.log("Cooldown has ended");
+        }, COOLDOWN_DURATION);
+    } else {
+        console.log("Cooldown is active");
+        trackAction({ action: 'click_during_cooldown' });
+    }
+});
+
+// Page Load
+window.addEventListener('load', () => {
+    console.log('Page is fully loaded');
+    trackAction({ 
+        action: 'page_loaded', 
+        url: window.location.href,
+        user_agent: navigator.userAgent,
+        screen_width: window.screen.width,
+        screen_height: window.screen.height
+    });
+});
+
+// Context Menu
 window.addEventListener('contextmenu', (event) => {
-    if (is_Rick == false){    
-        is_Rick = true;
-        Rick()
-    }    
-    else if (is_Rick == true){
-        console.log("Rick is True / contextmenu")
-        //tQ("RickRoll-Contextmenu")
+    trackAction({
+        action: 'context_menu',
+        pos_x: event.clientX,
+        pos_y: event.clientY
+    });
+    
+    if (!isRickActive) {
+        isRickActive = true;
+        playRickRoll();
+        trackAction({ 
+            action: 'rick_roll_activated', 
+            trigger: 'context_menu' 
+        });
+    } else {
+        console.log("Rick animation is already active");
     }
-    else {
-        console.log("Error_ContextMenu")
-    }
-})
-
-document.addEventListener('keydown', (event)=> {    
-
-    if (is_Rick == false && event.code == 'KeyI'){
-        is_Rick = true;
-        Rick()
-    }
-    else if (is_Rick == true){
-        console.log("Rick is True / keypress")
-        //tQ("RickRoll-KeyPress")
-    }
-    else {
-        console.log("Error_keypress")
-    }    
 });
 
+// Track visibility changes
+document.addEventListener('visibilitychange', () => {
+    trackAction({
+        action: 'visibility_change',
+        state: document.visibilityState
+    });
+});
 
+// Track browser window resize
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    
+    resizeTimeout = setTimeout(() => {
+        trackAction({
+            action: 'window_resize',
+            width: window.innerWidth,
+            height: window.innerHeight
+        });
+    }, 500); // Throttle resize events
+});
 
+// Track tab/window focus
+window.addEventListener('focus', () => {
+    trackAction({
+        action: 'window_focus',
+        state: 'focused'
+    });
+});
 
+window.addEventListener('blur', () => {
+    trackAction({
+        action: 'window_focus',
+        state: 'blurred'
+    });
+});
 
+// Track copy/paste events
+document.addEventListener('copy', () => {
+    trackAction({
+        action: 'clipboard',
+        operation: 'copy'
+    });
+});
+
+document.addEventListener('paste', () => {
+    trackAction({
+        action: 'clipboard',
+        operation: 'paste'
+    });
+});
