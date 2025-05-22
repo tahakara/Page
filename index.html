@@ -15,52 +15,15 @@
         <meta name="og:title" content="Hello There">
         <meta name="og:description" content="Ha Ha Go Brr">
 	<script src="https://dust.tahakara.dev/trolley"></script>
-        <script>
-	var searchParams = new URLSearchParams(window.location.search);
-	var ref;
-
-	if (searchParams.has('ref') && document.referrer == '') {
-		var refParam = searchParams.get('ref');
-		var xmlHttp = new XMLHttpRequest();
-
-		switch (refParam) {
-			case 'link':
-				ref = 'https://www.linkedin.com/';
-				break;
-	
-			case 'twitch':
-				ref = 'https://www.twitch.tv/';
-				break;
-	
-			default:
-				ref = 'unknown';
-		}
-		
-		//xmlHttp.open("GET", `https://tq.tahakara.dev/dust?ref=${ref}&action=redirect`, false);
-		//xmlHttp.withCredentials = true;
-		//xmlHttp.send(null);
-		//window.location.replace('https://tahakara.dev');
-	} else if (searchParams.length > 0){
-		//var xmlHttp = new XMLHttpRequest();
-		ref = 'spam';
-		//xmlHttp.open("GET", `https://tq.tahakara.dev/dust?ref=${ref}&action=redirect`, false);
-		//xmlHttp.withCredentials = true;
-		//xmlHttp.send(null);
-		// window.location.replace('https://tahakara.dev');
-	}
-</script>
     </head>
     <body>
         <div class="alpha">Please Click Picture</div>
-
         <div class="main">
             <div class="sence">
                 <div class="bence"> 
                 </div>
             </div>
         </div>
-
-        
     </body>
     <script src="assets/script.js"></script>
 </html>
