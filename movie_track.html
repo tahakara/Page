@@ -186,10 +186,10 @@
         <button class="navbar-btn export" onclick="exportData()">
             <span>⬇️</span> <span data-i18n="export">Dışa Aktar</span>
         </button>
-        <button class="navbar-btn import" onclick="document.getElementById('importFile').click()">
+        <button class="navbar-btn import" onclick="showImportModal()">
             <span>⬆️</span> <span data-i18n="import">İçe Aktar</span>
         </button>
-        <input type="file" id="importFile" accept=".json" onchange="importData(event)">
+        <input type="file" id="importFile" accept=".json" onchange="handleImportFile(event)" style="display: none;">
         <button class="navbar-btn print" onclick="printMovies()">
             <span>🖨️</span> <span data-i18n="print">Yazdır</span>
         </button>
@@ -198,6 +198,37 @@
 
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
+
+<!-- Import Mode Modal -->
+<div id="importModeModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>⬆️ <span data-i18n="importMode">İçe Aktarma Modu</span></h3>
+        </div>
+        <div class="modal-body">
+            <p style="margin-bottom: 20px; color: #bbb;" data-i18n="importModeDescription">İçe aktarılan veriler mevcut verilerinize nasıl uygulanacak?</p>
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <button class="modal-btn" onclick="selectImportMode('merge')" style="background: #10b981; color: white; padding: 15px; text-align: left; display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 24px;">➕</span>
+                    <div>
+                        <div style="font-weight: bold; margin-bottom: 5px;" data-i18n="mergeMode">Mevcut Verilere Ekle</div>
+                        <div style="font-size: 12px; opacity: 0.9;" data-i18n="mergeModeDescription">İçe aktarılan filmler mevcut listenize eklenecek (Yinelenenler atlanacak)</div>
+                    </div>
+                </button>
+                <button class="modal-btn" onclick="selectImportMode('replace')" style="background: #ef4444; color: white; padding: 15px; text-align: left; display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 24px;">🔄</span>
+                    <div>
+                        <div style="font-weight: bold; margin-bottom: 5px;" data-i18n="replaceMode">Mevcut Verilerin Üzerine Yaz</div>
+                        <div style="font-size: 12px; opacity: 0.9;" data-i18n="replaceModeDescription">Tüm mevcut veriler silinecek ve sadece içe aktarılan veriler kalacak</div>
+                    </div>
+                </button>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn cancel" onclick="closeImportModal()" data-i18n="cancel">İptal</button>
+        </div>
+    </div>
+</div>
 
 <div class="container">
     <div class="main-content">
@@ -334,6 +365,14 @@
             exportSuccess: 'Veriler başarıyla dışa aktarıldı!',
             importSuccess: 'Veriler başarıyla içe aktarıldı!',
             importError: 'Veri içe aktarılması hatası. Lütfen dosya formatını kontrol edin.',
+            importMode: 'İçe Aktarma Modu',
+            importModeDescription: 'İçe aktarılan veriler mevcut verilerinize nasıl uygulanacak?',
+            mergeMode: 'Mevcut Verilere Ekle',
+            mergeModeDescription: 'İçe aktarılan filmler mevcut listenize eklenecek (Yinelenenler atlanacak)',
+            replaceMode: 'Mevcut Verilerin Üzerine Yaz',
+            replaceModeDescription: 'Tüm mevcut veriler silinecek ve sadece içe aktarılan veriler kalacak',
+            duplicatesSkipped: 'yinelenen atlandı',
+            cancel: 'İptal',
             alreadyWatched: 'zaten izlediğim listede!',
             alreadyInWatchlist: 'zaten watchlist\'te!',
             addedToWatchlist: 'watchlist\'e eklendi!',
@@ -368,6 +407,14 @@
             exportSuccess: 'Data exported successfully!',
             importSuccess: 'Data imported successfully!',
             importError: 'Error importing data. Please check the file format.',
+            importMode: 'Import Mode',
+            importModeDescription: 'How should the imported data be applied to your existing data?',
+            mergeMode: 'Add to Existing Data',
+            mergeModeDescription: 'Imported movies will be added to your current list (Duplicates will be skipped)',
+            replaceMode: 'Replace Existing Data',
+            replaceModeDescription: 'All existing data will be deleted and only imported data will remain',
+            duplicatesSkipped: 'duplicates skipped',
+            cancel: 'Cancel',
             alreadyWatched: 'is already in your watched list!',
             alreadyInWatchlist: 'is already in your watchlist!',
             addedToWatchlist: 'added to watchlist!',
@@ -523,8 +570,25 @@
         showToast(t('exportSuccess'), 'success');
     }
     
+    // Import Mode Selection
+    let importMode = 'merge'; // 'merge' or 'replace'
+    
+    function showImportModal() {
+        document.getElementById('importModeModal').classList.add('show');
+    }
+    
+    function closeImportModal() {
+        document.getElementById('importModeModal').classList.remove('show');
+    }
+    
+    function selectImportMode(mode) {
+        importMode = mode;
+        closeImportModal();
+        document.getElementById('importFile').click();
+    }
+    
     // Import Data
-    function importData(event) {
+    function handleImportFile(event) {
         const file = event.target.files[0];
         if (!file) return;
         
@@ -533,19 +597,54 @@
             try {
                 const data = JSON.parse(e.target.result);
                 
-                if (data.watched && Array.isArray(data.watched)) {
-                    watchedMovies = data.watched;
-                    localStorage.setItem('trnt_movies', JSON.stringify(watchedMovies));
-                    displayWatchedMovies();
+                if (importMode === 'replace') {
+                    // Replace mode: Overwrite existing data
+                    if (data.watched && Array.isArray(data.watched)) {
+                        watchedMovies = data.watched;
+                        localStorage.setItem('trnt_movies', JSON.stringify(watchedMovies));
+                        displayWatchedMovies();
+                    }
+                    
+                    if (data.watchlist && Array.isArray(data.watchlist)) {
+                        watchlistMovies = data.watchlist;
+                        localStorage.setItem('trnt_watchlist', JSON.stringify(watchlistMovies));
+                        displayWatchlistMovies();
+                    }
+                    
+                    showToast(`${t('importSuccess')} ${data.watched?.length || 0} ${t('watched')}, ${data.watchlist?.length || 0} watchlist. (${t('replaceMode')})`, 'success');
+                } else {
+                    // Merge mode: Add to existing data (skip duplicates)
+                    let addedWatched = 0;
+                    let addedWatchlist = 0;
+                    
+                    if (data.watched && Array.isArray(data.watched)) {
+                        data.watched.forEach(movie => {
+                            const exists = watchedMovies.some(m => m.imdbID === movie.imdbID);
+                            if (!exists) {
+                                watchedMovies.push(movie);
+                                addedWatched++;
+                            }
+                        });
+                        localStorage.setItem('trnt_movies', JSON.stringify(watchedMovies));
+                        displayWatchedMovies();
+                    }
+                    
+                    if (data.watchlist && Array.isArray(data.watchlist)) {
+                        data.watchlist.forEach(movie => {
+                            const exists = watchlistMovies.some(m => m.imdbID === movie.imdbID);
+                            if (!exists) {
+                                watchlistMovies.push(movie);
+                                addedWatchlist++;
+                            }
+                        });
+                        localStorage.setItem('trnt_watchlist', JSON.stringify(watchlistMovies));
+                        displayWatchlistMovies();
+                    }
+                    
+                    const skippedWatched = (data.watched?.length || 0) - addedWatched;
+                    const skippedWatchlist = (data.watchlist?.length || 0) - addedWatchlist;
+                    showToast(`${t('importSuccess')} +${addedWatched} ${t('watched')}, +${addedWatchlist} watchlist. (${skippedWatched + skippedWatchlist} ${t('duplicatesSkipped')})`, 'success');
                 }
-                
-                if (data.watchlist && Array.isArray(data.watchlist)) {
-                    watchlistMovies = data.watchlist;
-                    localStorage.setItem('trnt_watchlist', JSON.stringify(watchlistMovies));
-                    displayWatchlistMovies();
-                }
-                
-                showToast(`${t('importSuccess')} ${data.watched?.length || 0} ${t('watched')}, ${data.watchlist?.length || 0} watchlist.`, 'success');
             } catch (error) {
                 showToast(t('importError'), 'error');
                 console.error('Import error:', error);
