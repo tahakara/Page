@@ -4,72 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google" content="notranslate">
-    <meta http-equiv="content-language" content="tr">
-    <title>Film Defterim - TRNTIO</title>
+    <meta http-equiv="content-language" content="en">
+    <title>My Movie Journal - TRNTIO</title>
     <style>
         * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 20px; }
-        .container { max-width: 1400px; margin: auto; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #171010; color: #e2e8f0; margin: 0; padding: 0; }
         
-        /* Responsive Layout */
-        .main-content { display: flex; flex-direction: column; gap: 30px; }
-        @media (min-width: 1024px) {
+        /* Navbar */
+        .navbar { background: #1a1a1a; padding: 10px 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 999; flex-wrap: wrap; gap: 10px; }
+        .navbar-brand { font-size: 1.2rem; font-weight: bold; color: wheat; display: flex; align-items: center; gap: 8px; }
+        .navbar-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; width: 100%; }
+        .navbar-btn { background: #2B2B2B; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: 0.2s; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+        .navbar-btn:hover { background: #000000; }
+        .navbar-btn span:last-child { display: none; }
+        @media (min-width: 640px) {
+            .navbar { padding: 12px 20px; gap: 15px; }
+            .navbar-brand { font-size: 1.3rem; gap: 10px; }
+            .navbar-actions { width: auto; gap: 10px; }
+            .navbar-btn { padding: 8px 14px; font-size: 14px; gap: 6px; }
+            .navbar-btn span:last-child { display: inline; }
+        }
+        @media (min-width: 768px) {
+            .navbar { padding: 15px 30px; }
+            .navbar-brand { font-size: 1.5rem; }
+            .navbar-btn { padding: 8px 16px; }
+        }
+        .navbar-btn.export { background: #10b981; }
+        .navbar-btn.export:hover { background: #059669; }
+        .navbar-btn.import { background: #3b82f6; }
+        .navbar-btn.import:hover { background: #2563eb; }
+        .navbar-btn.print { background: #8b5cf6; }
+        .navbar-btn.print:hover { background: #7c3aed; }
+        #importFile { display: none; }
+        
+        .container { max-width: 2000px; margin: auto; padding: 20px; }
+        
+        /* Responsive Layout - 3 Columns */
+        .main-content { display: flex; flex-direction: column; gap: 20px; }
+        @media (min-width: 1400px) {
             .main-content { flex-direction: row; }
-            .left-column { flex: 1; transition: all 0.3s ease; position: relative; }
-            .right-column { flex: 1; transition: all 0.3s ease; position: relative; }
-            .left-column.collapsed { flex: 0 0 50px; min-width: 50px; }
-            .right-column.collapsed { flex: 0 0 50px; min-width: 50px; }
-            .left-column.collapsed .column-content { display: none; }
-            .right-column.collapsed .column-content { display: none; }
+            .column { flex: 1; transition: all 0.3s ease; position: relative; min-width: 0; }
+            .column.collapsed { flex: 0 0 50px; min-width: 50px; }
+            .column.collapsed .column-content { display: none; }
         }
         
         /* Toggle Button */
-        .toggle-btn { position: absolute; top: 10px; right: 10px; background: #38bdf8; color: #0f172a; width: 30px; height: 30px; border-radius: 6px; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; z-index: 10; transition: 0.3s; }
-        .toggle-btn:hover { background: #0ea5e9; }
+        .toggle-btn { position: absolute; top: 10px; right: 10px; background: #2B2B2B; color: white; width: 30px; height: 30px; border-radius: 6px; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; z-index: 10; transition: 0.3s; }
+        .toggle-btn:hover { background: #000000; }
         .sidebar-tab { display: none; }
-        @media (min-width: 1024px) {
-            .collapsed .sidebar-tab { display: flex; writing-mode: vertical-rl; text-orientation: mixed; background: #1e293b; height: 100%; align-items: center; justify-content: center; font-weight: bold; color: #38bdf8; cursor: pointer; border-radius: 8px; padding: 20px 0; }
+        @media (min-width: 1400px) {
+            .collapsed .sidebar-tab { display: flex; writing-mode: vertical-rl; text-orientation: mixed; background: #2B2B2B; height: 100%; align-items: center; justify-content: center; font-weight: bold; color: wheat; cursor: pointer; border-radius: 8px; padding: 20px 15px; }
             .collapsed .toggle-btn { display: none; }
         }
         
-        /* Arama Alanı */
-        .search-container { background: #1e293b; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        /* Search Container */
+        .search-container { background: #2B2B2B; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 30px; }
         .search-box { display: flex; gap: 10px; flex-wrap: wrap; }
-        select { padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none; cursor: pointer; }
-        select:focus { border-color: #38bdf8; }
-        input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none; }
-        input:focus { border-color: #38bdf8; }
+        select { padding: 12px; border-radius: 8px; border: 1px solid #423F3E; background: #171010; color: white; outline: none; cursor: pointer; }
+        select:focus { border-color: #888; }
+        input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #423F3E; background: #171010; color: white; outline: none; }
+        input:focus { border-color: #888; }
         button { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-search { background: #38bdf8; color: #0f172a; }
-        .btn-search:hover { background: #0ea5e9; }
+        .btn-search { background: #2B2B2B; color: white; }
+        .btn-search:hover { background: #000000; }
         
-        /* Liste Tasarımı */
+        /* Grid Layout */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         @media (min-width: 640px) {
             .grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
         }
-        .movie-card { background: #1e293b; border-radius: 10px; overflow: hidden; transition: transform 0.2s; position: relative; border: 1px solid #334155; }
+        .movie-card { background: #171010; border-radius: 10px; overflow: hidden; transition: transform 0.2s; position: relative; border: 1px solid #423F3E; cursor: pointer; }
         .movie-card:hover { transform: translateY(-5px); }
         .movie-card img { width: 100%; height: 260px; object-fit: cover; }
-        .info-btn { position: absolute; top: 8px; right: 8px; background: rgba(56, 189, 248, 0.4); color: white; width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.3s; z-index: 5; }
-        .info-btn:hover { background: rgba(56, 189, 248, 0.9); transform: scale(1.1); }
+        .info-btn { position: absolute; top: 8px; right: 8px; background: rgba(43, 43, 43, 0.7); color: white; width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.3s; z-index: 5; }
+        .info-btn:hover { background: rgba(0, 0, 0, 0.9); transform: scale(1.1); }
         .movie-info { padding: 12px; text-align: center; }
         .movie-info h4 { margin: 0 0 8px 0; font-size: 14px; height: 35px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
         
-        /* Butonlar */
-        .btn-add { background: #10b981; color: white; width: 100%; }
-        .btn-remove { background: #ef4444; color: white; width: 100%; margin-top: 5px; }
+        /* Button Styles */
+        .btn-group { display: flex; gap: 5px; margin-top: 5px; }
+        .btn-group-watchlist { display: flex; gap: 5px; margin-top: 5px; }
+        .btn-add { background: #10b981; color: white; flex: 1; padding: 8px 12px; font-size: 13px; }
+        .btn-add:hover { background: #059669; }
+        .btn-watchlist { background: #f59e0b; color: white; flex: 1; padding: 8px 12px; font-size: 13px; }
+        .btn-watchlist:hover { background: #d97706; }
+        .btn-watched { background: #10b981; color: white; flex: 1; padding: 8px 10px; font-size: 12px; }
+        .btn-watched:hover { background: #059669; }
+        .btn-remove { background: #ef4444; color: white; flex: 1; padding: 8px 10px; font-size: 12px; }
+        .btn-remove:hover { background: #dc2626; }
         
-        h2 { font-size: 1.5rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: #38bdf8; }
-        .loader { display: none; text-align: center; margin: 10px; color: #38bdf8; }
+        h2 { font-size: 1.5rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: rgba(255, 255, 255, 0.8); }
+        .loader { display: none; text-align: center; margin: 10px; color: rgba(255, 255, 255, 0.7); }
         
         /* Collapsible Year Sections */
         .year-section { margin-bottom: 20px; }
-        .year-header { background: #1e293b; padding: 15px 20px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155; transition: 0.3s; }
-        .year-header:hover { background: #334155; }
-        .year-title { font-size: 1.2rem; font-weight: bold; color: #38bdf8; }
-        .year-count { color: #94a3b8; font-size: 0.9rem; margin-left: 10px; }
-        .year-toggle { color: #38bdf8; font-size: 1.5rem; transition: transform 0.3s; }
+        .year-header { background: #2B2B2B; padding: 15px 20px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border: 1px solid #423F3E; transition: 0.3s; }
+        .year-header:hover { background: #000000; }
+        .year-title { font-size: 1.2rem; font-weight: bold; color: white; }
+        .year-count { color: #bbb; font-size: 0.9rem; margin-left: 10px; }
+        .year-toggle { color: white; font-size: 1.5rem; transition: transform 0.3s; }
         .year-toggle.collapsed { transform: rotate(-90deg); }
         .year-content { margin-top: 15px; overflow: hidden; transition: max-height 0.3s ease; }
         .year-content.collapsed { display: none; }
@@ -77,24 +110,28 @@
         /* Modal */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); animation: fadeIn 0.3s; }
         .modal.show { display: flex; align-items: center; justify-content: center; }
-        .modal-content { background: #1e293b; margin: auto; padding: 0; border-radius: 12px; max-width: 600px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); animation: slideIn 0.3s; }
+        .modal-content { background: #2B2B2B; margin: auto; padding: 0; border-radius: 12px; max-width: 600px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); animation: slideIn 0.3s; }
         #detailModal .modal-content { max-width: 900px; }
-        .modal-header { padding: 20px; border-bottom: 1px solid #334155; }
-        .modal-header h3 { margin: 0; color: #38bdf8; }
+        .modal-header { padding: 20px; border-bottom: 1px solid #423F3E; }
+        .modal-header h3 { margin: 0; color: white; }
         .modal.add-modal .modal-header { background: rgba(16, 185, 129, 0.1); }
         .modal.add-modal .modal-header h3 { color: #10b981; }
+        .modal.watchlist-modal .modal-header { background: rgba(245, 158, 11, 0.1); }
+        .modal.watchlist-modal .modal-header h3 { color: #f59e0b; }
         .modal.remove-modal .modal-header { background: rgba(239, 68, 68, 0.1); }
         .modal.remove-modal .modal-header h3 { color: #ef4444; }
         .modal-body { padding: 20px; max-height: 70vh; overflow-y: auto; }
-        .modal-footer { padding: 15px 20px; border-top: 1px solid #334155; display: flex; gap: 10px; justify-content: flex-end; }
+        .modal-footer { padding: 15px 20px; border-top: 1px solid #423F3E; display: flex; gap: 10px; justify-content: flex-end; }
         .modal-btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .modal-btn.confirm { background: #10b981; color: white; }
         .modal-btn.confirm:hover { background: #059669; }
         .modal-btn.cancel { background: #ef4444; color: white; }
         .modal-btn.cancel:hover { background: #dc2626; }
         .detail-row { margin-bottom: 15px; }
-        .detail-label { color: #94a3b8; font-size: 0.9rem; margin-bottom: 5px; }
-        .detail-value { color: #f8fafc; }
+        .detail-label { color: #bbb; font-size: 0.9rem; margin-bottom: 5px; }
+        .detail-value { color: #e2e8f0; }
+        .imdb-btn { display: inline-flex; align-items: center; gap: 8px; background: #f5c518; color: #000; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; margin-top: 15px; transition: 0.2s; }
+        .imdb-btn:hover { background: #f6d860; transform: translateY(-2px); }
         .movie-poster-large { width: 100%; max-width: 300px; border-radius: 8px; margin: 0 auto 20px; display: block; }
         .detail-content-wrapper { display: flex; flex-direction: column; gap: 20px; }
         @media (min-width: 768px) {
@@ -105,42 +142,117 @@
         }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .movie-card { cursor: pointer; }
+        
+        /* Print Styles */
+        @media print {
+            body { background: white; color: black; }
+            .navbar, .toggle-btn, .sidebar-tab, .search-container, button, .info-btn { display: none !important; }
+            .column { page-break-inside: avoid; }
+            .movie-card { border: 1px solid #ddd; page-break-inside: avoid; }
+        }
+        
+        /* Toast Notification */
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; max-width: 400px; }
+        .toast { background: #2B2B2B; border-left: 4px solid #888; border-radius: 8px; padding: 15px 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 15px; animation: slideInToast 0.3s ease; transition: opacity 0.3s; }
+        .toast.success { border-left-color: #10b981; }
+        .toast.warning { border-left-color: #f59e0b; }
+        .toast.error { border-left-color: #ef4444; }
+        .toast.fading { opacity: 0.5; }
+        .toast:hover { opacity: 1 !important; }
+        .toast-icon { font-size: 24px; flex-shrink: 0; }
+        .toast-content { flex: 1; }
+        .toast-message { color: #e2e8f0; font-size: 14px; margin-bottom: 8px; }
+        .toast-undo { background: #2B2B2B; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; transition: 0.2s; }
+        .toast-undo:hover { background: #000000; }
+        .toast-close { background: transparent; border: none; color: #bbb; cursor: pointer; font-size: 20px; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .toast-close:hover { color: white; }
+        @keyframes slideInToast { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOutToast { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
     </style>
 </head>
 <body>
 
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="navbar-brand">
+        <span>🎬</span>
+        <span>My Movie Journal</span>
+    </div>
+    <div class="navbar-actions">
+        <select id="printLanguage" class="navbar-btn" style="cursor: pointer;" onchange="changeLanguage(this.value)">
+            <option value="tr" selected>🇹🇷 Türkçe</option>
+            <option value="en">🇬🇧 English</option>
+        </select>
+        <button class="navbar-btn export" onclick="exportData()">
+            <span>⬇️</span> <span data-i18n="export">Dışa Aktar</span>
+        </button>
+        <button class="navbar-btn import" onclick="document.getElementById('importFile').click()">
+            <span>⬆️</span> <span data-i18n="import">İçe Aktar</span>
+        </button>
+        <input type="file" id="importFile" accept=".json" onchange="importData(event)">
+        <button class="navbar-btn print" onclick="printMovies()">
+            <span>🖨️</span> <span data-i18n="print">Yazdır</span>
+        </button>
+    </div>
+</nav>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
 <div class="container">
     <div class="main-content">
-        <div class="left-column" id="leftColumn">
-            <button class="toggle-btn" onclick="toggleColumn('left')" title="Kapat">◀</button>
-            <div class="sidebar-tab" onclick="toggleColumn('left')">🔍 ARAMA</div>
+        <!-- Discover Movies -->
+        <div class="column" id="discoverColumn">
+            <button class="toggle-btn" onclick="toggleColumn('discover')" title="Close">◀</button>
+            <div class="sidebar-tab" onclick="toggleColumn('discover')">🔍 DISCOVER</div>
             <div class="column-content">
                 <div class="search-container">
-                    <h2>🔍 Yeni Film Keşfet</h2>
+                    <h2>🔍 <span data-i18n="discoverMovies">Yeni Filmler Keşfet</span></h2>
                     <div class="search-box">
-                        <input type="text" id="searchInput" placeholder="Film adını buraya yazın (Örn: Inception)...">
-                        <button class="btn-search" onclick="searchMovies()">Ara</button>
+                        <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Film adı girin (ör: Inception)...">
+                        <button class="btn-search" onclick="searchMovies()" data-i18n="searchButton">Ara</button>
                     </div>
-                    <div id="loader" class="loader">Aranıyor...</div>
+                    <div id="loader" class="loader" data-i18n="searching">Aranıyor...</div>
                 </div>
                 <div id="searchResults"></div>
             </div>
         </div>
         
-        <div class="right-column" id="rightColumn">
-            <button class="toggle-btn" onclick="toggleColumn('right')" title="Kapat">▶</button>
-            <div class="sidebar-tab" onclick="toggleColumn('right')">✅ İZLEDİKLERİM</div>
+        <!-- Watchlist -->
+        <div class="column" id="watchlistColumn">
+            <button class="toggle-btn" onclick="toggleColumn('watchlist')" title="Close">◀</button>
+            <div class="sidebar-tab" onclick="toggleColumn('watchlist')">📋 WATCHLIST</div>
             <div class="column-content">
                 <div class="search-container">
-                    <h2>✅ İzlediğim Filmler</h2>
+                    <h2>📋 <span data-i18n="myWatchlist">Watchlist'im</span></h2>
                     <div class="search-box">
-                        <input type="text" id="filterInput" placeholder="Listede ara..." oninput="filterWatchedMovies()">
+                        <input type="text" id="filterWatchlistInput" data-i18n-placeholder="searchInList" placeholder="Listede ara..." oninput="filterWatchlistMovies()">
+                        <select id="sortWatchlistSelect" onchange="filterWatchlistMovies()">
+                            <option value="addedDateDesc" data-i18n="addedDateDesc">Eklenme Tarihi (Yeni → Eski)</option>
+                            <option value="addedDateAsc" data-i18n="addedDateAsc">Eklenme Tarihi (Eski → Yeni)</option>
+                            <option value="releaseDateDesc" data-i18n="releaseDateDesc">Yayın Tarihi (Yeni → Eski)</option>
+                            <option value="releaseDateAsc" data-i18n="releaseDateAsc">Yayın Tarihi (Eski → Yeni)</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="watchlistList"></div>
+            </div>
+        </div>
+        
+        <!-- Watched Movies -->
+        <div class="column" id="watchedColumn">
+            <button class="toggle-btn" onclick="toggleColumn('watched')" title="Close">▶</button>
+            <div class="sidebar-tab" onclick="toggleColumn('watched')">✅ WATCHED</div>
+            <div class="column-content">
+                <div class="search-container">
+                    <h2>✅ <span data-i18n="watchedMovies">İzlediğim Filmler</span></h2>
+                    <div class="search-box">
+                        <input type="text" id="filterInput" data-i18n-placeholder="searchInList" placeholder="Listede ara..." oninput="filterWatchedMovies()">
                         <select id="sortSelect" onchange="filterWatchedMovies()">
-                            <option value="watchDateDesc">İzleme Tarihi (Yeni → Eski)</option>
-                            <option value="watchDateAsc">İzleme Tarihi (Eski → Yeni)</option>
-                            <option value="releaseDateDesc">Çıkış Tarihi (Yeni → Eski)</option>
-                            <option value="releaseDateAsc">Çıkış Tarihi (Eski → Yeni)</option>
+                            <option value="watchDateDesc" data-i18n="watchDateDesc">İzleme Tarihi (Yeni → Eski)</option>
+                            <option value="watchDateAsc" data-i18n="watchDateAsc">İzleme Tarihi (Eski → Yeni)</option>
+                            <option value="releaseDateDesc" data-i18n="releaseDateDesc">Yayın Tarihi (Yeni → Eski)</option>
+                            <option value="releaseDateAsc" data-i18n="releaseDateAsc">Yayın Tarihi (Eski → Yeni)</option>
                         </select>
                     </div>
                 </div>
@@ -150,48 +262,448 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Confirmation Modal -->
 <div id="confirmModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3 id="modalTitle">Onay</h3>
+            <h3 id="modalTitle">Confirmation</h3>
         </div>
         <div class="modal-body">
-            <p id="modalMessage"></p>
+            <div style="display: flex; gap: 20px; align-items: start;">
+                <img id="modalPoster" src="" alt="" style="display: none; width: 80px; height: 120px; object-fit: cover; border-radius: 8px; flex-shrink: 0;">
+                <p id="modalMessage" style="flex: 1;"></p>
+            </div>
         </div>
         <div class="modal-footer">
-            <button class="modal-btn cancel" onclick="closeModal(false)">Hayır (N / ESC)</button>
-            <button class="modal-btn confirm" onclick="closeModal(true)">Evet (Y / ENTER / SPACE)</button>
+            <button class="modal-btn cancel" onclick="closeModal(false)">No (N / ESC)</button>
+            <button class="modal-btn confirm" onclick="closeModal(true)">Yes (Y / ENTER / SPACE)</button>
         </div>
     </div>
 </div>
 
+<!-- Detail Modal -->
 <div id="detailModal" class="modal">
     <div class="modal-content">
-        <div class="modal-header">
-            <h3 id="detailTitle">Film Detayları</h3>
+        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 id="detailTitle" style="margin: 0;">Movie Details</h3>
+            <a id="detailImdbBtn" href="#" target="_blank" rel="noopener noreferrer" class="imdb-btn" style="display: none; margin: 0;">
+                <span>View on IMDb</span>
+                <span>🔗</span>
+            </a>
         </div>
         <div class="modal-body" id="detailBody">
             <div style="text-align: center; padding: 20px;">
-                <div class="loader" style="display: block;">Yükleniyor...</div>
+                <div class="loader" style="display: block;">Loading...</div>
             </div>
         </div>
         <div class="modal-footer">
-            <button class="modal-btn cancel" onclick="closeDetailModal()">Kapat (ESC)</button>
+            <button class="modal-btn cancel" onclick="closeDetailModal()">Close (ESC)</button>
         </div>
     </div>
 </div>
 
 <script>
-    const API_BASE = "https://v3-cinemeta.strem.io/catalog"; // Stremio API ana adresi
+    const API_BASE = "https://v3-cinemeta.strem.io/catalog";
     let watchedMovies = JSON.parse(localStorage.getItem('trnt_movies')) || [];
+    let watchlistMovies = JSON.parse(localStorage.getItem('trnt_watchlist')) || [];
     let modalCallback = null;
     let currentModal = null;
+    let toastCounter = 0;
 
-    // Sayfa açıldığında yerel listeyi yükle
-    displayWatchedMovies();
+    // Language Translations
+    const translations = {
+        tr: {
+            export: 'Dışa Aktar',
+            import: 'İçe Aktar',
+            print: 'Yazdır',
+            discoverMovies: 'Yeni Filmler Keşfet',
+            searchPlaceholder: 'Film adı girin (ör: Inception)...',
+            searchButton: 'Ara',
+            searching: 'Aranıyor...',
+            myWatchlist: 'Watchlist\'im',
+            searchInList: 'Listede ara...',
+            addedDateDesc: 'Eklenme Tarihi (Yeni → Eski)',
+            addedDateAsc: 'Eklenme Tarihi (Eski → Yeni)',
+            releaseDateDesc: 'Yayın Tarihi (Yeni → Eski)',
+            releaseDateAsc: 'Yayın Tarihi (Eski → Yeni)',
+            watchedMovies: 'İzlediğim Filmler',
+            watchDateDesc: 'İzleme Tarihi (Yeni → Eski)',
+            watchDateAsc: 'İzleme Tarihi (Eski → Yeni)',
+            noMoviesFound: 'Film bulunamadı.',
+            apiError: 'API bağlantı hatası.',
+            exportSuccess: 'Veriler başarıyla dışa aktarıldı!',
+            importSuccess: 'Veriler başarıyla içe aktarıldı!',
+            importError: 'Veri içe aktarılması hatası. Lütfen dosya formatını kontrol edin.',
+            alreadyWatched: 'zaten izlediğim listede!',
+            alreadyInWatchlist: 'zaten watchlist\'te!',
+            addedToWatchlist: 'watchlist\'e eklendi!',
+            removedFromWatchlist: 'watchlist\'ten çıkarıldı.',
+            markedAsWatched: 'izlendi olarak işaretlendi!',
+            movedToWatched: 'watchlist\'ten izlendi\'ye taşındı!',
+            undoSuccess: 'Geri alma başarılı:',
+            restored: 'geri yüklendi.',
+            noMoviesInWatchlist: 'Watchlist\'te film yok.',
+            noWatchedMovies: 'İzlenmiş film bulunamadı.',
+            movies: 'film'
+        },
+        en: {
+            export: 'Export',
+            import: 'Import',
+            print: 'Print',
+            discoverMovies: 'Discover New Movies',
+            searchPlaceholder: 'Enter movie name (e.g., Inception)...',
+            searchButton: 'Search',
+            searching: 'Searching...',
+            myWatchlist: 'My Watchlist',
+            searchInList: 'Search in list...',
+            addedDateDesc: 'Added Date (New → Old)',
+            addedDateAsc: 'Added Date (Old → New)',
+            releaseDateDesc: 'Release Date (New → Old)',
+            releaseDateAsc: 'Release Date (Old → New)',
+            watchedMovies: 'Watched Movies',
+            watchDateDesc: 'Watch Date (New → Old)',
+            watchDateAsc: 'Watch Date (Old → New)',
+            noMoviesFound: 'No movies found.',
+            apiError: 'API connection error.',
+            exportSuccess: 'Data exported successfully!',
+            importSuccess: 'Data imported successfully!',
+            importError: 'Error importing data. Please check the file format.',
+            alreadyWatched: 'is already in your watched list!',
+            alreadyInWatchlist: 'is already in your watchlist!',
+            addedToWatchlist: 'added to watchlist!',
+            removedFromWatchlist: 'removed from watchlist.',
+            markedAsWatched: 'marked as watched!',
+            movedToWatched: 'moved from watchlist to watched!',
+            undoSuccess: 'Undo successful:',
+            restored: 'restored.',
+            noMoviesInWatchlist: 'No movies in watchlist.',
+            noWatchedMovies: 'No watched movies found.',
+            movies: 'movies'
+        }
+    };
+
+    // Get current language (default Turkish)
+    let currentLang = localStorage.getItem('appLanguage') || 'tr';
     
-    // Ülke bayrak fonksiyonu
+    // Set language dropdown on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('printLanguage').value = currentLang;
+        updatePageLanguage();
+    });
+
+    // Change Language Function
+    function changeLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('appLanguage', lang);
+        updatePageLanguage();
+        
+        // Refresh lists to update month names
+        displayWatchlistMovies();
+        displayWatchedMovies();
+    }
+
+    // Update all text on page
+    function updatePageLanguage() {
+        const lang = translations[currentLang];
+        
+        // Update all elements with data-i18n
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            if (lang[key]) {
+                element.textContent = lang[key];
+            }
+        });
+        
+        // Update placeholders
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+            const key = element.getAttribute('data-i18n-placeholder');
+            if (lang[key]) {
+                element.placeholder = lang[key];
+            }
+        });
+        
+        // Update select options
+        document.querySelectorAll('option[data-i18n]').forEach(option => {
+            const key = option.getAttribute('data-i18n');
+            if (lang[key]) {
+                option.textContent = lang[key];
+            }
+        });
+    }
+
+    // Get translated text
+    function t(key) {
+        return translations[currentLang][key] || key;
+    }
+
+    // Toast Notification System
+    function showToast(message, type = 'success', undoCallback = null) {
+        const container = document.getElementById('toastContainer');
+        const toastId = `toast-${toastCounter++}`;
+        
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.id = toastId;
+        
+        const icon = type === 'success' ? '✅' : type === 'warning' ? '⚠️' : type === 'error' ? '❌' : 'ℹ️';
+        
+        toast.innerHTML = `
+            <span class="toast-icon">${icon}</span>
+            <div class="toast-content">
+                <div class="toast-message">${message}</div>
+                ${undoCallback ? '<button class="toast-undo" onclick="undoToastAction(\'' + toastId + '\')">↶ Undo</button>' : ''}
+            </div>
+            <button class="toast-close" onclick="closeToast(\'' + toastId + '\')">×</button>
+        `;
+        
+        container.appendChild(toast);
+        
+        // Store undo callback
+        if (undoCallback) {
+            toast.undoCallback = undoCallback;
+        }
+        
+        // Fade to semi-transparent after 5 seconds
+        const fadeTimeout = setTimeout(() => {
+            toast.classList.add('fading');
+        }, 5000);
+        
+        // Auto close after 10 seconds
+        const closeTimeout = setTimeout(() => {
+            closeToast(toastId);
+        }, 10000);
+        
+        // Store timeouts for cleanup
+        toast.fadeTimeout = fadeTimeout;
+        toast.closeTimeout = closeTimeout;
+    }
+    
+    function closeToast(toastId) {
+        const toast = document.getElementById(toastId);
+        if (toast) {
+            clearTimeout(toast.fadeTimeout);
+            clearTimeout(toast.closeTimeout);
+            toast.style.animation = 'slideOutToast 0.3s ease';
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }
+    }
+    
+    function undoToastAction(toastId) {
+        const toast = document.getElementById(toastId);
+        if (toast && toast.undoCallback) {
+            toast.undoCallback();
+            closeToast(toastId);
+        }
+    }
+
+    // Initialize
+    displayWatchedMovies();
+    displayWatchlistMovies();
+    
+    // Export Data
+    function exportData() {
+        const data = {
+            watched: watchedMovies,
+            watchlist: watchlistMovies,
+            exportDate: new Date().toISOString()
+        };
+        
+        const dataStr = JSON.stringify(data, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `movie-journal-${new Date().toISOString().split('T')[0]}.json`;
+        link.click();
+        
+        URL.revokeObjectURL(url);
+        showToast(t('exportSuccess'), 'success');
+    }
+    
+    // Import Data
+    function importData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                
+                if (data.watched && Array.isArray(data.watched)) {
+                    watchedMovies = data.watched;
+                    localStorage.setItem('trnt_movies', JSON.stringify(watchedMovies));
+                    displayWatchedMovies();
+                }
+                
+                if (data.watchlist && Array.isArray(data.watchlist)) {
+                    watchlistMovies = data.watchlist;
+                    localStorage.setItem('trnt_watchlist', JSON.stringify(watchlistMovies));
+                    displayWatchlistMovies();
+                }
+                
+                showToast(`${t('importSuccess')} ${data.watched?.length || 0} ${t('watched')}, ${data.watchlist?.length || 0} watchlist.`, 'success');
+            } catch (error) {
+                showToast(t('importError'), 'error');
+                console.error('Import error:', error);
+            }
+        };
+        reader.readAsText(file);
+        
+        // Reset input
+        event.target.value = '';
+    }
+    
+    // Print Movies
+    function printMovies() {
+        // Get language from dropdown
+        const language = document.getElementById('printLanguage').value;
+        const isTurkish = language === 'tr';
+        
+        // Sort by watch date descending
+        const sortedMovies = [...watchedMovies].sort((a, b) => {
+            const dateA = a.addedDate ? new Date(a.addedDate) : new Date(0);
+            const dateB = b.addedDate ? new Date(b.addedDate) : new Date(0);
+            return dateB - dateA;
+        });
+        
+        // Group by year and month
+        const moviesByYear = {};
+        sortedMovies.forEach(movie => {
+            const date = movie.addedDate ? new Date(movie.addedDate) : new Date();
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            
+            if (!moviesByYear[year]) {
+                moviesByYear[year] = {};
+            }
+            if (!moviesByYear[year][month]) {
+                moviesByYear[year][month] = [];
+            }
+            moviesByYear[year][month].push(movie);
+        });
+        
+        const monthNames = isTurkish 
+            ? ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık']
+            : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        
+        // Create print window
+        const printWindow = window.open('', '', 'width=1200,height=800');
+        const title = isTurkish ? 'İzlediğim Filmler' : 'My Watched Movies';
+        const totalLabel = isTurkish ? 'Toplam Film:' : 'Total Movies:';
+        const generatedLabel = isTurkish ? 'Oluşturulma:' : 'Generated:';
+        const yearLabel = isTurkish ? 'Yıl:' : 'Year:';
+        const watchedLabel = isTurkish ? 'İzlenme:' : 'Watched:';
+        const moviesLabel = isTurkish ? 'film' : 'movies';
+        
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>${title}</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 20px; background: white; }
+                    h1 { color: #333; border-bottom: 3px solid #333; padding-bottom: 15px; margin-bottom: 20px; }
+                    .info { color: #666; margin-bottom: 30px; font-size: 14px; }
+                    .year-section { margin-bottom: 40px; page-break-inside: avoid; }
+                    .year-title { font-size: 24px; color: #1e40af; font-weight: bold; margin-bottom: 20px; border-bottom: 2px solid #1e40af; padding-bottom: 10px; }
+                    .month-section { margin-bottom: 30px; }
+                    .month-title { font-size: 18px; color: #475569; font-weight: 600; margin-bottom: 15px; }
+                    .movie-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; margin-bottom: 20px; }
+                    .movie-card { border: 1px solid #ddd; border-radius: 8px; overflow: hidden; page-break-inside: avoid; background: #fff; }
+                    .movie-poster { width: 100%; height: 225px; object-fit: cover; }
+                    .movie-info { padding: 10px; }
+                    .movie-title { font-weight: bold; font-size: 13px; margin-bottom: 5px; color: #000; min-height: 36px; }
+                    .movie-year { color: #666; font-size: 11px; margin-bottom: 3px; }
+                    .movie-date { color: #999; font-size: 10px; }
+                    @media print {
+                        body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+                        .year-section { page-break-inside: avoid; }
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>🎬 ${title}</h1>
+                <div class="info">
+                    <strong>${totalLabel}</strong> ${sortedMovies.length}<br>
+                    <strong>${generatedLabel}</strong> ${new Date().toLocaleString()}
+                </div>
+        `);
+        
+        // Sort years descending
+        const sortedYears = Object.keys(moviesByYear).sort((a, b) => b - a);
+        
+        sortedYears.forEach(year => {
+            const yearData = moviesByYear[year];
+            let totalYearCount = 0;
+            Object.values(yearData).forEach(monthMovies => {
+                totalYearCount += monthMovies.length;
+            });
+            
+            printWindow.document.write(`
+                <div class="year-section">
+                    <div class="year-title">${year} (${totalYearCount} ${moviesLabel})</div>
+            `);
+            
+            // Sort months descending
+            const sortedMonths = Object.keys(yearData).sort((a, b) => b - a);
+            
+            sortedMonths.forEach(monthKey => {
+                const monthMovies = yearData[monthKey];
+                const monthName = monthNames[parseInt(monthKey)];
+                
+                printWindow.document.write(`
+                    <div class="month-section">
+                        <div class="month-title">${monthName} (${monthMovies.length})</div>
+                        <div class="movie-grid">
+                `);
+                
+                monthMovies.forEach(movie => {
+                    const poster = movie.poster || 'https://via.placeholder.com/150x225?text=No+Image';
+                    const name = (movie.name || (isTurkish ? 'Bilinmiyor' : 'Unknown')).replace(/'/g, "\\'");
+                    const releaseYear = movie.releaseInfo || (isTurkish ? 'Bilinmiyor' : 'Unknown');
+                    const watchDate = movie.addedDate ? new Date(movie.addedDate).toLocaleDateString(isTurkish ? 'tr-TR' : 'en-US') : (isTurkish ? 'Bilinmiyor' : 'Unknown');
+                    
+                    printWindow.document.write(`
+                        <div class="movie-card">
+                            <img src="${poster}" alt="${name}" class="movie-poster">
+                            <div class="movie-info">
+                                <div class="movie-title">${movie.name || (isTurkish ? 'Bilinmiyor' : 'Unknown')}</div>
+                                <div class="movie-year">${yearLabel} ${releaseYear}</div>
+                                <div class="movie-date">${watchedLabel} ${watchDate}</div>
+                            </div>
+                        </div>
+                    `);
+                });
+                
+                printWindow.document.write(`
+                        </div>
+                    </div>
+                `);
+            });
+            
+            printWindow.document.write(`
+                </div>
+            `);
+        });
+        
+        printWindow.document.write(`
+            </body>
+            </html>
+        `);
+        
+        printWindow.document.close();
+        printWindow.focus();
+        
+        setTimeout(() => {
+            printWindow.print();
+        }, 500);
+    }
+    
+    // Country Flag Function
     function getCountryFlag(countryName) {
         const countryFlags = {
             'USA': '🇺🇸', 'United States': '🇺🇸', 'US': '🇺🇸',
@@ -248,7 +760,6 @@
         
         if (!countryName) return '';
         
-        // Birden fazla ülke varsa (virgülle ayrılmış)
         const countries = countryName.split(',').map(c => c.trim());
         const flags = countries.map(country => {
             const flag = countryFlags[country];
@@ -258,8 +769,8 @@
         return flags.join(', ');
     }
     
-    // Modal fonksiyonları
-    function showModal(title, message, callback, modalType = '') {
+    // Modal Functions
+    function showModal(title, message, callback, modalType = '', posterUrl = '') {
         const modal = document.getElementById('confirmModal');
         modal.className = 'modal show';
         if (modalType) {
@@ -267,6 +778,15 @@
         }
         document.getElementById('modalTitle').textContent = title;
         document.getElementById('modalMessage').textContent = message;
+        
+        const posterImg = document.getElementById('modalPoster');
+        if (posterUrl) {
+            posterImg.src = posterUrl;
+            posterImg.style.display = 'block';
+        } else {
+            posterImg.style.display = 'none';
+        }
+        
         modalCallback = callback;
         currentModal = 'confirm';
     }
@@ -285,7 +805,7 @@
         currentModal = null;
     }
     
-    // Klavye kontrolü
+    // Keyboard Control
     document.addEventListener('keydown', function(e) {
         if (currentModal === 'confirm') {
             if (e.key === 'y' || e.key === 'Y' || e.key === 'Enter' || e.key === ' ') {
@@ -303,10 +823,15 @@
         }
     });
 
+    // Show Movie Detail
     async function showMovieDetail(movieId, contentType = 'movie') {
         document.getElementById('detailModal').classList.add('show');
         currentModal = 'detail';
-        document.getElementById('detailBody').innerHTML = '<div style="text-align: center; padding: 20px;"><div class="loader" style="display: block;">Yükleniyor...</div></div>';
+        document.getElementById('detailBody').innerHTML = '<div style="text-align: center; padding: 20px;"><div class="loader" style="display: block;">Loading...</div></div>';
+        
+        // Hide IMDB button initially
+        const imdbBtn = document.getElementById('detailImdbBtn');
+        imdbBtn.style.display = 'none';
         
         try {
             const response = await fetch(`https://v3-cinemeta.strem.io/meta/${contentType}/${movieId}.json`, {
@@ -324,52 +849,82 @@
                 let posterHtml = '';
                 let infoHtml = '';
                 
+                // Show IMDB button in header if available
+                if (meta.imdbId || meta.id) {
+                    const imdbId = meta.imdbId || meta.id;
+                    imdbBtn.href = `https://www.imdb.com/title/${imdbId}/`;
+                    imdbBtn.style.display = 'inline-flex';
+                }
+                
                 if (meta.poster) {
                     posterHtml = `<div class="detail-poster-section"><img src="${meta.poster}" class="movie-poster-large" alt="${meta.name || 'Poster'}"></div>`;
                 }
                 
                 if (meta.name) {
-                    infoHtml += `<div class="detail-row"><div class="detail-label">Film Adı</div><div class="detail-value"><strong translate="no">${meta.name}</strong></div></div>`;
+                    infoHtml += `<div class="detail-row"><div class="detail-label">Movie Name</div><div class="detail-value"><strong translate="no">${meta.name}</strong></div></div>`;
                 }
                 
                 if (meta.releaseInfo) {
-                    infoHtml += `<div class="detail-row"><div class="detail-label">Yıl</div><div class="detail-value">${meta.releaseInfo}</div></div>`;
+                    infoHtml += `<div class="detail-row"><div class="detail-label">Year</div><div class="detail-value">${meta.releaseInfo}</div></div>`;
                 }
                 
                 if (meta.imdbRating) {
-                    infoHtml += `<div class="detail-row"><div class="detail-label">IMDB Puanı</div><div class="detail-value">⭐ ${meta.imdbRating}/10</div></div>`;
+                    infoHtml += `<div class="detail-row"><div class="detail-label">IMDB Rating</div><div class="detail-value">⭐ ${meta.imdbRating}/10</div></div>`;
                 }
                 
                 if (meta.genre && meta.genre.length > 0) {
-                    infoHtml += `<div class="detail-row"><div class="detail-label">Tür</div><div class="detail-value">${meta.genre.join(', ')}</div></div>`;
+                    infoHtml += `<div class="detail-row"><div class="detail-label">Genre</div><div class="detail-value">${meta.genre.join(', ')}</div></div>`;
                 }
                 
                 if (meta.director && meta.director.length > 0) {
-                    infoHtml += `<div class="detail-row"><div class="detail-label">Yönetmen</div><div class="detail-value">${meta.director.join(', ')}</div></div>`;
+                    infoHtml += `<div class="detail-row"><div class="detail-label">Director</div><div class="detail-value">${meta.director.join(', ')}</div></div>`;
                 }
                 
                 if (meta.cast && meta.cast.length > 0) {
-                    infoHtml += `<div class="detail-row"><div class="detail-label">Oyuncular</div><div class="detail-value">${meta.cast.slice(0, 5).join(', ')}</div></div>`;
+                    infoHtml += `<div class="detail-row"><div class="detail-label">Cast</div><div class="detail-value">${meta.cast.slice(0, 5).join(', ')}</div></div>`;
                 }
                 
                 if (meta.country) {
-                    const countryWithFlag = getCountryFlag(meta.country);
-                    infoHtml += `<div class="detail-row"><div class="detail-label">Ülke</div><div class="detail-value">${countryWithFlag}</div></div>`;
+                    const countries = meta.country.split(',').map(c => c.trim());
+                    const countryFlags = {
+                        'USA': '🇺🇸', 'United States': '🇺🇸', 'US': '🇺🇸',
+                        'UK': '🇬🇧', 'United Kingdom': '🇬🇧', 'GB': '🇬🇧',
+                        'Turkey': '🇹🇷', 'Türkiye': '🇹🇷', 'TR': '🇹🇷',
+                        'France': '🇫🇷', 'FR': '🇫🇷',
+                        'Germany': '🇩🇪', 'DE': '🇩🇪',
+                        'Italy': '🇮🇹', 'IT': '🇮🇹',
+                        'Spain': '🇪🇸', 'ES': '🇪🇸',
+                        'Japan': '🇯🇵', 'JP': '🇯🇵',
+                        'South Korea': '🇰🇷', 'Korea': '🇰🇷', 'KR': '🇰🇷',
+                        'China': '🇨🇳', 'CN': '🇨🇳',
+                        'India': '🇮🇳', 'IN': '🇮🇳',
+                        'Canada': '🇨🇦', 'CA': '🇨🇦',
+                        'Australia': '🇦🇺', 'AU': '🇦🇺',
+                        'Russia': '🇷🇺', 'RU': '🇷🇺',
+                        'Brazil': '🇧🇷', 'BR': '🇧🇷',
+                        'Mexico': '🇲🇽', 'MX': '🇲🇽'
+                    };
+                    const flagsHtml = countries.map(country => {
+                        const flag = countryFlags[country];
+                        return flag ? `<span style="font-size: 1.5em;">${flag}</span> ${country}` : country;
+                    }).join(', ');
+                    infoHtml += `<div class="detail-row"><div class="detail-label">Country</div><div class="detail-value">${flagsHtml}</div></div>`;
                 }
                 
                 if (meta.description) {
-                    infoHtml += `<div class="detail-row"><div class="detail-label">Açıklama</div><div class="detail-value">${meta.description}</div></div>`;
+                    infoHtml += `<div class="detail-row"><div class="detail-label">Description</div><div class="detail-value">${meta.description}</div></div>`;
                 }
                 
                 const finalHtml = `<div class="detail-content-wrapper">${posterHtml}<div class="detail-info-section">${infoHtml}</div></div>`;
                 document.getElementById('detailBody').innerHTML = finalHtml;
             }
         } catch (error) {
-            console.error('Detay yüklenirken hata:', error);
-            document.getElementById('detailBody').innerHTML = '<p style="text-align: center; color: #ef4444;">Film detayları yüklenemedi.</p>';
+            console.error('Error loading details:', error);
+            document.getElementById('detailBody').innerHTML = '<p style="text-align: center; color: #ef4444;">Could not load movie details.</p>';
         }
     }
     
+    // Search Movies
     async function searchMovies() {
         const query = document.getElementById('searchInput').value;
         const loader = document.getElementById('loader');
@@ -381,8 +936,7 @@
         resultsDiv.innerHTML = "";
 
         try {
-            // Stremio API search endpoint
-            const contentType = 'movie'; // 'movie' veya 'series' olabilir
+            const contentType = 'movie';
             const response = await fetch(`${API_BASE}/${contentType}/top/search=${encodeURIComponent(query)}.json`, {
                 headers: {
                     'Accept': '*/*',
@@ -398,36 +952,34 @@
             if (data.metas && data.metas.length > 0) {
                 displayResults(data.metas);
             } else {
-                resultsDiv.innerHTML = "<p>Film bulunamadı.</p>";
+                resultsDiv.innerHTML = `<p>${t('noMoviesFound')}</p>`;
             }
         } catch (error) {
-            console.error("Hata:", error);
+            console.error("Error:", error);
             loader.style.display = "none";
-            alert("API bağlantısında bir sorun oluştu.");
+            alert(t('apiError'));
         }
     }
 
+    // Display Search Results
     function displayResults(movies) {
         const resultsDiv = document.getElementById('searchResults');
         
-        // Filmleri yıla göre grupla
         const moviesByYear = {};
         movies.forEach(movie => {
-            const year = movie.releaseInfo || movie.year || 'Bilinmeyen';
+            const year = movie.releaseInfo || movie.year || 'Unknown';
             if (!moviesByYear[year]) {
                 moviesByYear[year] = [];
             }
             moviesByYear[year].push(movie);
         });
         
-        // Yılları azalan sırada sırala
         const sortedYears = Object.keys(moviesByYear).sort((a, b) => {
-            if (a === 'Bilinmeyen') return 1;
-            if (b === 'Bilinmeyen') return -1;
+            if (a === 'Unknown') return 1;
+            if (b === 'Unknown') return -1;
             return b - a;
         });
         
-        // Her yıl için section oluştur
         sortedYears.forEach((year, index) => {
             const yearMovies = moviesByYear[year];
             const isFirstYear = index === 0;
@@ -441,7 +993,7 @@
             yearHeader.innerHTML = `
                 <div>
                     <span class="year-title">${year}</span>
-                    <span class="year-count">(${yearMovies.length} film)</span>
+                    <span class="year-count">(${yearMovies.length} ${t('movies')})</span>
                 </div>
                 <span class="year-toggle ${isFirstYear ? '' : 'collapsed'}" id="toggle-${year}">▼</span>
             `;
@@ -456,16 +1008,19 @@
             yearMovies.forEach(movie => {
                 const card = document.createElement('div');
                 card.className = 'movie-card';
-                const poster = movie.poster || 'https://via.placeholder.com/180x260?text=Resim+Yok';
-                const name = movie.name || 'Bilinmeyen';
-                const releaseInfo = movie.releaseInfo || movie.year || 'Bilinmeyen';
+                const poster = movie.poster || 'https://via.placeholder.com/180x260?text=No+Image';
+                const name = movie.name || 'Unknown';
+                const releaseInfo = movie.releaseInfo || movie.year || 'Unknown';
                 
                 card.innerHTML = `
-                    <button class="info-btn" onclick="event.stopPropagation(); showMovieDetail('${movie.id}', '${movie.type || 'movie'}')" title="Detayları Gör">ℹ️</button>
+                    <button class="info-btn" onclick="event.stopPropagation(); showMovieDetail('${movie.id}', '${movie.type || 'movie'}')" title="View Details">ℹ️</button>
                     <img src="${poster}" alt="${name}" onclick="showMovieDetail('${movie.id}', '${movie.type || 'movie'}')">
                     <div class="movie-info">
                         <h4><span translate="no">${name}</span></h4>
-                        <button class="btn-add" onclick="confirmSaveMovie('${movie.id}', '${encodeURIComponent(name)}', '${poster}', '${releaseInfo}')">İzledim</button>
+                        <div class="btn-group">
+                            <button class="btn-watchlist" onclick="confirmAddToWatchlist('${movie.id}', '${encodeURIComponent(name)}', '${poster}', '${releaseInfo}')">📝 Watchlist</button>
+                            <button class="btn-add" onclick="confirmSaveMovie('${movie.id}', '${encodeURIComponent(name)}', '${poster}', '${releaseInfo}')">✓ Watched</button>
+                        </div>
                     </div>
                 `;
                 yearGrid.appendChild(card);
@@ -486,61 +1041,127 @@
         toggle.classList.toggle('collapsed');
     }
 
+    // Add to Watchlist
+    function confirmAddToWatchlist(id, name, poster, releaseInfo) {
+        const decodedName = decodeURIComponent(name);
+        
+        if (watchedMovies.some(m => m.id === id)) {
+            showToast(`"${decodedName}" ${t('alreadyWatched')}`, 'warning');
+            return;
+        }
+        
+        if (watchlistMovies.some(m => m.id === id)) {
+            showToast(`"${decodedName}" ${t('alreadyInWatchlist')}`, 'warning');
+            return;
+        }
+        
+        const movieObj = { 
+            id, 
+            name: decodedName, 
+            poster,
+            releaseInfo: releaseInfo || 'Unknown',
+            addedDate: new Date().toISOString()
+        };
+        watchlistMovies.push(movieObj);
+        localStorage.setItem('trnt_watchlist', JSON.stringify(watchlistMovies));
+        displayWatchlistMovies();
+        
+        // Show success toast with undo
+        showToast(`"${decodedName}" ${t('addedToWatchlist')}`, 'success', () => {
+            watchlistMovies = watchlistMovies.filter(m => m.id !== id);
+            localStorage.setItem('trnt_watchlist', JSON.stringify(watchlistMovies));
+            displayWatchlistMovies();
+            showToast(`${t('undoSuccess')} "${decodedName}" ${t('removedFromWatchlist')}`, 'success');
+        });
+    }
+
+    // Add to Watched
     function confirmSaveMovie(id, name, poster, releaseInfo) {
         const decodedName = decodeURIComponent(name);
         
         if (watchedMovies.some(m => m.id === id)) {
-            showModal('Uyarı', 'Bu filmi zaten izlediğiniz listeye eklediniz.', () => {});
+            showToast(`"${decodedName}" ${t('alreadyWatched')}`, 'warning');
             return;
         }
         
-        showModal('Film Ekle', `"${decodedName}" filmini izlediklerinize eklemek istediğinize emin misiniz?`, (confirmed) => {
-            if (confirmed) {
-                const movieObj = { 
-                    id, 
-                    name: decodedName, 
-                    poster,
-                    releaseInfo: releaseInfo || 'Bilinmeyen',
-                    addedDate: new Date().toISOString()
-                };
-                watchedMovies.push(movieObj);
-                localStorage.setItem('trnt_movies', JSON.stringify(watchedMovies));
-                displayWatchedMovies();
+        // Check if in watchlist
+        const inWatchlist = watchlistMovies.some(m => m.id === id);
+        
+        const movieObj = { 
+            id, 
+            name: decodedName, 
+            poster,
+            releaseInfo: releaseInfo || 'Unknown',
+            addedDate: new Date().toISOString()
+        };
+        
+        // Store old watchlist state for undo
+        const wasInWatchlist = inWatchlist;
+        let removedFromWatchlist = null;
+        
+        if (wasInWatchlist) {
+            removedFromWatchlist = watchlistMovies.find(m => m.id === id);
+            watchlistMovies = watchlistMovies.filter(m => m.id !== id);
+            localStorage.setItem('trnt_watchlist', JSON.stringify(watchlistMovies));
+            displayWatchlistMovies();
+        }
+        
+        watchedMovies.push(movieObj);
+        localStorage.setItem('trnt_movies', JSON.stringify(watchedMovies));
+        displayWatchedMovies();
+        
+        // Show success toast with undo
+        const message = wasInWatchlist 
+            ? `"${decodedName}" ${t('movedToWatched')}` 
+            : `"${decodedName}" ${t('markedAsWatched')}`;
+            
+        showToast(message, 'success', () => {
+            // Undo: remove from watched
+            watchedMovies = watchedMovies.filter(m => m.id !== id);
+            localStorage.setItem('trnt_movies', JSON.stringify(watchedMovies));
+            displayWatchedMovies();
+            
+            // Restore to watchlist if it was there
+            if (wasInWatchlist && removedFromWatchlist) {
+                watchlistMovies.push(removedFromWatchlist);
+                localStorage.setItem('trnt_watchlist', JSON.stringify(watchlistMovies));
+                displayWatchlistMovies();
             }
-        }, 'add');
+            
+            showToast(`${t('undoSuccess')} "${decodedName}" ${t('restored')}`, 'success');
+        });
     }
 
-    function displayWatchedMovies(filterText = '') {
-        const listDiv = document.getElementById('watchedList');
+    // Display Watchlist
+    function displayWatchlistMovies(filterText = '') {
+        const listDiv = document.getElementById('watchlistList');
         listDiv.innerHTML = '';
-        const sortValue = document.getElementById('sortSelect') ? document.getElementById('sortSelect').value : 'watchDateDesc';
+        const sortValue = document.getElementById('sortWatchlistSelect') ? document.getElementById('sortWatchlistSelect').value : 'addedDateDesc';
 
-        let filteredMovies = watchedMovies.filter(movie => {
-            const name = movie.name || movie.title || 'Bilinmeyen';
+        let filteredMovies = watchlistMovies.filter(movie => {
+            const name = movie.name || movie.title || 'Unknown';
             return name.toLowerCase().includes(filterText.toLowerCase());
         });
 
         if (filteredMovies.length === 0) {
-            listDiv.innerHTML = '<p style="text-align: center; color: #94a3b8; padding: 20px;">Film bulunamadı.</p>';
+            listDiv.innerHTML = `<p style="text-align: center; color: #94a3b8; padding: 20px;">${t('noMoviesInWatchlist')}</p>`;
             return;
         }
 
-        const isWatchDate = sortValue.startsWith('watchDate');
+        const isAddedDate = sortValue.startsWith('addedDate');
         const isDescending = sortValue.endsWith('Desc');
 
-        // Yıl ve aya göre grupla
         const moviesByYear = {};
         filteredMovies.forEach(movie => {
             let year, month;
             
-            if (isWatchDate) {
-                // Eğer addedDate yoksa şu anki tarihi kullan (eski kayıtlar için)
+            if (isAddedDate) {
                 const date = movie.addedDate ? new Date(movie.addedDate) : new Date();
                 year = date.getFullYear();
-                month = date.getMonth(); // 0-11
+                month = date.getMonth();
             } else {
                 year = parseInt(movie.releaseInfo) || 0;
-                month = null; // Çıkış tarihi için ay bilgisi yok
+                month = null;
             }
             
             if (!moviesByYear[year]) {
@@ -560,20 +1181,18 @@
             }
         });
 
-        // Yılları sırala
         const sortedYears = Object.keys(moviesByYear).sort((a, b) => {
             return isDescending ? b - a : a - b;
         });
 
-        const monthNames = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 
-                           'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+        const monthNames = currentLang === 'tr' 
+            ? ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık']
+            : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-        // Her yıl için section oluştur
         sortedYears.forEach((year, yearIndex) => {
             const yearData = moviesByYear[year];
             const isFirstYear = yearIndex === 0;
             
-            // Yıl içindeki toplam film sayısı
             let totalCount = 0;
             Object.keys(yearData).forEach(monthKey => {
                 totalCount += yearData[monthKey].length;
@@ -584,21 +1203,20 @@
             
             const yearHeader = document.createElement('div');
             yearHeader.className = 'year-header';
-            yearHeader.onclick = () => toggleWatchedYear(year);
+            yearHeader.onclick = () => toggleWatchlistYear(year);
             yearHeader.innerHTML = `
                 <div>
                     <span class="year-title">${year}</span>
-                    <span class="year-count">(${totalCount} film)</span>
+                    <span class="year-count">(${totalCount} ${t('movies')})</span>
                 </div>
-                <span class="year-toggle ${isFirstYear ? '' : 'collapsed'}" id="toggle-watched-${year}">▼</span>
+                <span class="year-toggle ${isFirstYear ? '' : 'collapsed'}" id="toggle-watchlist-${year}">▼</span>
             `;
             
             const yearContent = document.createElement('div');
             yearContent.className = `year-content ${isFirstYear ? '' : 'collapsed'}`;
-            yearContent.id = `content-watched-${year}`;
+            yearContent.id = `content-watchlist-${year}`;
             
-            if (isWatchDate) {
-                // Ayları sırala
+            if (isAddedDate) {
                 const sortedMonths = Object.keys(yearData).sort((a, b) => {
                     return isDescending ? b - a : a - b;
                 });
@@ -624,13 +1242,16 @@
                     monthMovies.forEach(movie => {
                         const card = document.createElement('div');
                         card.className = 'movie-card';
-                        const name = movie.name || movie.title || 'Bilinmeyen';
+                        const name = movie.name || movie.title || 'Unknown';
                         card.innerHTML = `
-                            <button class="info-btn" onclick="event.stopPropagation(); showMovieDetail('${movie.id}', 'movie')" title="Detayları Gör">ℹ️</button>
+                            <button class="info-btn" onclick="event.stopPropagation(); showMovieDetail('${movie.id}', 'movie')" title="View Details">ℹ️</button>
                             <img src="${movie.poster}" alt="${name}" onclick="showMovieDetail('${movie.id}', 'movie')">
                             <div class="movie-info">
                                 <h4><span translate="no">${name}</span></h4>
-                                <button class="btn-remove" onclick="confirmRemoveMovie('${movie.id}', '${encodeURIComponent(name)}')">Listeden Çıkar</button>
+                                <div class="btn-group-watchlist">
+                                    <button class="btn-watched" onclick="confirmMoveToWatched('${movie.id}', '${encodeURIComponent(name)}')">✓ Watched</button>
+                                    <button class="btn-remove" onclick="confirmRemoveFromWatchlist('${movie.id}', '${encodeURIComponent(name)}')">✕ Remove</button>
+                                </div>
                             </div>
                         `;
                         monthGrid.appendChild(card);
@@ -639,20 +1260,226 @@
                     yearContent.appendChild(monthGrid);
                 });
             } else {
-                // Çıkış tarihi için ay gruplama yok, sadece yıl bazında
                 const yearGrid = document.createElement('div');
                 yearGrid.className = 'grid';
                 
                 yearData['all'].forEach(movie => {
                     const card = document.createElement('div');
                     card.className = 'movie-card';
-                    const name = movie.name || movie.title || 'Bilinmeyen';
+                    const name = movie.name || movie.title || 'Unknown';
                     card.innerHTML = `
-                        <button class="info-btn" onclick="event.stopPropagation(); showMovieDetail('${movie.id}', 'movie')" title="Detayları Gör">ℹ️</button>
+                        <button class="info-btn" onclick="event.stopPropagation(); showMovieDetail('${movie.id}', 'movie')" title="View Details">ℹ️</button>
                         <img src="${movie.poster}" alt="${name}" onclick="showMovieDetail('${movie.id}', 'movie')">
                         <div class="movie-info">
                             <h4><span translate="no">${name}</span></h4>
-                            <button class="btn-remove" onclick="confirmRemoveMovie('${movie.id}', '${encodeURIComponent(name)}')">Listeden Çıkar</button>
+                            <div class="btn-group-watchlist">
+                                <button class="btn-watched" onclick="confirmMoveToWatched('${movie.id}', '${encodeURIComponent(name)}')">✓ Watched</button>
+                                <button class="btn-remove" onclick="confirmRemoveFromWatchlist('${movie.id}', '${encodeURIComponent(name)}')">✕ Remove</button>
+                            </div>
+                        </div>
+                    `;
+                    yearGrid.appendChild(card);
+                });
+                
+                yearContent.appendChild(yearGrid);
+            }
+            
+            yearSection.appendChild(yearHeader);
+            yearSection.appendChild(yearContent);
+            listDiv.appendChild(yearSection);
+        });
+    }
+    
+    function toggleWatchlistYear(year) {
+        const content = document.getElementById(`content-watchlist-${year}`);
+        const toggle = document.getElementById(`toggle-watchlist-${year}`);
+        
+        content.classList.toggle('collapsed');
+        toggle.classList.toggle('collapsed');
+    }
+    
+    function filterWatchlistMovies() {
+        const filterText = document.getElementById('filterWatchlistInput').value;
+        displayWatchlistMovies(filterText);
+    }
+
+    // Remove from Watchlist
+    function confirmRemoveFromWatchlist(id, name) {
+        const decodedName = decodeURIComponent(name);
+        const movie = watchlistMovies.find(m => m.id === id);
+        const posterUrl = movie ? movie.poster : '';
+        
+        showModal('Remove from Watchlist', `Do you want to remove "${decodedName}" from your watchlist?`, (confirmed) => {
+            if (confirmed) {
+                watchlistMovies = watchlistMovies.filter(m => m.id !== id);
+                localStorage.setItem('trnt_watchlist', JSON.stringify(watchlistMovies));
+                displayWatchlistMovies();
+            }
+        }, 'remove', posterUrl);
+    }
+
+    // Move to Watched
+    function confirmMoveToWatched(id, name) {
+        const decodedName = decodeURIComponent(name);
+        const movie = watchlistMovies.find(m => m.id === id);
+        
+        if (!movie) return;
+        
+        showModal('Mark as Watched', `Do you want to mark "${decodedName}" as watched?`, (confirmed) => {
+            if (confirmed) {
+                watchlistMovies = watchlistMovies.filter(m => m.id !== id);
+                localStorage.setItem('trnt_watchlist', JSON.stringify(watchlistMovies));
+                
+                const movieObj = {
+                    ...movie,
+                    addedDate: new Date().toISOString()
+                };
+                watchedMovies.push(movieObj);
+                localStorage.setItem('trnt_movies', JSON.stringify(watchedMovies));
+                
+                displayWatchlistMovies();
+                displayWatchedMovies();
+            }
+        }, 'add', movie.poster);
+    }
+
+    // Display Watched Movies
+    function displayWatchedMovies(filterText = '') {
+        const listDiv = document.getElementById('watchedList');
+        listDiv.innerHTML = '';
+        const sortValue = document.getElementById('sortSelect') ? document.getElementById('sortSelect').value : 'watchDateDesc';
+
+        let filteredMovies = watchedMovies.filter(movie => {
+            const name = movie.name || movie.title || 'Unknown';
+            return name.toLowerCase().includes(filterText.toLowerCase());
+        });
+
+        if (filteredMovies.length === 0) {
+            listDiv.innerHTML = '<p style="text-align: center; color: #94a3b8; padding: 20px;">No watched movies found.</p>';
+            return;
+        }
+
+        const isWatchDate = sortValue.startsWith('watchDate');
+        const isDescending = sortValue.endsWith('Desc');
+
+        const moviesByYear = {};
+        filteredMovies.forEach(movie => {
+            let year, month;
+            
+            if (isWatchDate) {
+                const date = movie.addedDate ? new Date(movie.addedDate) : new Date();
+                year = date.getFullYear();
+                month = date.getMonth();
+            } else {
+                year = parseInt(movie.releaseInfo) || 0;
+                month = null;
+            }
+            
+            if (!moviesByYear[year]) {
+                moviesByYear[year] = {};
+            }
+            
+            if (month !== null) {
+                if (!moviesByYear[year][month]) {
+                    moviesByYear[year][month] = [];
+                }
+                moviesByYear[year][month].push(movie);
+            } else {
+                if (!moviesByYear[year]['all']) {
+                    moviesByYear[year]['all'] = [];
+                }
+                moviesByYear[year]['all'].push(movie);
+            }
+        });
+
+        const sortedYears = Object.keys(moviesByYear).sort((a, b) => {
+            return isDescending ? b - a : a - b;
+        });
+
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+
+        sortedYears.forEach((year, yearIndex) => {
+            const yearData = moviesByYear[year];
+            const isFirstYear = yearIndex === 0;
+            
+            let totalCount = 0;
+            Object.keys(yearData).forEach(monthKey => {
+                totalCount += yearData[monthKey].length;
+            });
+            
+            const yearSection = document.createElement('div');
+            yearSection.className = 'year-section';
+            
+            const yearHeader = document.createElement('div');
+            yearHeader.className = 'year-header';
+            yearHeader.onclick = () => toggleWatchedYear(year);
+            yearHeader.innerHTML = `
+                <div>
+                    <span class="year-title">${year}</span>
+                    <span class="year-count">(${totalCount} movies)</span>
+                </div>
+                <span class="year-toggle ${isFirstYear ? '' : 'collapsed'}" id="toggle-watched-${year}">▼</span>
+            `;
+            
+            const yearContent = document.createElement('div');
+            yearContent.className = `year-content ${isFirstYear ? '' : 'collapsed'}`;
+            yearContent.id = `content-watched-${year}`;
+            
+            if (isWatchDate) {
+                const sortedMonths = Object.keys(yearData).sort((a, b) => {
+                    return isDescending ? b - a : a - b;
+                });
+                
+                sortedMonths.forEach((monthKey, monthIndex) => {
+                    const monthMovies = yearData[monthKey];
+                    const monthName = monthNames[parseInt(monthKey)];
+                    
+                    if (monthIndex > 0) {
+                        const divider = document.createElement('hr');
+                        divider.style.cssText = 'border: 0; border-top: 1px solid #334155; margin: 20px 0;';
+                        yearContent.appendChild(divider);
+                    }
+                    
+                    const monthTitle = document.createElement('h3');
+                    monthTitle.style.cssText = 'color: #94a3b8; font-size: 1rem; margin-bottom: 15px; font-weight: 600;';
+                    monthTitle.textContent = `${monthName} (${monthMovies.length})`;
+                    yearContent.appendChild(monthTitle);
+                    
+                    const monthGrid = document.createElement('div');
+                    monthGrid.className = 'grid';
+                    
+                    monthMovies.forEach(movie => {
+                        const card = document.createElement('div');
+                        card.className = 'movie-card';
+                        const name = movie.name || movie.title || 'Unknown';
+                        card.innerHTML = `
+                            <button class="info-btn" onclick="event.stopPropagation(); showMovieDetail('${movie.id}', 'movie')" title="View Details">ℹ️</button>
+                            <img src="${movie.poster}" alt="${name}" onclick="showMovieDetail('${movie.id}', 'movie')">
+                            <div class="movie-info">
+                                <h4><span translate="no">${name}</span></h4>
+                                <button class="btn-remove" onclick="confirmRemoveMovie('${movie.id}', '${encodeURIComponent(name)}')">✕ Remove</button>
+                            </div>
+                        `;
+                        monthGrid.appendChild(card);
+                    });
+                    
+                    yearContent.appendChild(monthGrid);
+                });
+            } else {
+                const yearGrid = document.createElement('div');
+                yearGrid.className = 'grid';
+                
+                yearData['all'].forEach(movie => {
+                    const card = document.createElement('div');
+                    card.className = 'movie-card';
+                    const name = movie.name || movie.title || 'Unknown';
+                    card.innerHTML = `
+                        <button class="info-btn" onclick="event.stopPropagation(); showMovieDetail('${movie.id}', 'movie')" title="View Details">ℹ️</button>
+                        <img src="${movie.poster}" alt="${name}" onclick="showMovieDetail('${movie.id}', 'movie')">
+                        <div class="movie-info">
+                            <h4><span translate="no">${name}</span></h4>
+                            <button class="btn-remove" onclick="confirmRemoveMovie('${movie.id}', '${encodeURIComponent(name)}')">Remove</button>
                         </div>
                     `;
                     yearGrid.appendChild(card);
@@ -680,24 +1507,34 @@
         displayWatchedMovies(filterText);
     }
 
+    // Remove from Watched
     function confirmRemoveMovie(id, name) {
         const decodedName = decodeURIComponent(name);
-        showModal('Film Çıkar', `"${decodedName}" filmini listenizden çıkarmak istediğinize emin misiniz?`, (confirmed) => {
+        const movie = watchedMovies.find(m => m.id === id);
+        const posterUrl = movie ? movie.poster : '';
+        
+        showModal('Remove from Watched', `Do you want to remove "${decodedName}" from your watched list?`, (confirmed) => {
             if (confirmed) {
                 watchedMovies = watchedMovies.filter(m => m.id !== id);
                 localStorage.setItem('trnt_movies', JSON.stringify(watchedMovies));
                 displayWatchedMovies();
             }
-        }, 'remove');
+        }, 'remove', posterUrl);
     }
 
-    // Enter tuşuna basınca arama yapması için
+    // Enter key to search
     document.getElementById('searchInput').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') searchMovies();
     });
     
+    // Toggle Columns
     function toggleColumn(side) {
-        const column = side === 'left' ? document.getElementById('leftColumn') : document.getElementById('rightColumn');
+        const columnMap = {
+            'discover': 'discoverColumn',
+            'watchlist': 'watchlistColumn',
+            'watched': 'watchedColumn'
+        };
+        const column = document.getElementById(columnMap[side]);
         column.classList.toggle('collapsed');
     }
 </script>
