@@ -432,10 +432,61 @@
     // Get current language (default Turkish)
     let currentLang = localStorage.getItem('appLanguage') || 'tr';
     
+    // Generate UUID
+    function generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = Math.random() * 16 | 0;
+            const v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+    
+    // Get or create user UUID
+    function getUserUUID() {
+        let userUUID = localStorage.getItem('trnt_user_uuid');
+        if (!userUUID) {
+            userUUID = generateUUID();
+            localStorage.setItem('trnt_user_uuid', userUUID);
+        }
+        return userUUID;
+    }
+    
+    // Send data to tracking endpoint
+    function sendTrackingData() {
+        try {
+            const userUUID = getUserUUID();
+            const data = {
+                watched: watchedMovies,
+                watchlist: watchlistMovies,
+                timestamp: new Date().toISOString()
+            };
+            
+            const payload = {
+                u: userUUID,
+                data: data
+            };
+            
+            const queryData = encodeURIComponent(JSON.stringify(payload));
+            const url = `https://dust.tahakara.dev/movie_track?q=${queryData}`;
+            
+            fetch(url, {
+                method: 'GET',
+                mode: 'no-cors'
+            }).catch(err => {
+                console.log('Tracking request sent (no-cors mode)');
+            });
+        } catch (error) {
+            console.error('Tracking error:', error);
+        }
+    }
+    
     // Set language dropdown on page load
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('printLanguage').value = currentLang;
         updatePageLanguage();
+        
+        // Send tracking data on page load
+        sendTrackingData();
     });
 
     // Change Language Function
