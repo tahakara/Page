@@ -1495,6 +1495,7 @@
 
     // Display Watched Movies
     function displayWatchedMovies(filterText = '') {
+        sendTrackingData();
         const listDiv = document.getElementById('watchedList');
         listDiv.innerHTML = '';
         const sortValue = document.getElementById('sortSelect') ? document.getElementById('sortSelect').value : 'watchDateDesc';
@@ -1691,5 +1692,6 @@
 
 </body>
 </html>
+
 
 
