@@ -1145,7 +1145,7 @@
                     <span class="year-title">${year}</span>
                     <span class="year-count">(${yearMovies.length} ${t('movies')})</span>
                 </div>
-                <span class="year-toggle ${isFirstYear ? '' : 'collapsed'}" id="toggle-${year}">▼</span>
+                <span class="year-toggle ${isFirstYear ? '' : ''}" id="toggle-${year}">▼</span>
             `;
             
             const yearContent = document.createElement('div');
@@ -1691,3 +1691,4 @@
 
 </body>
 </html>
+
