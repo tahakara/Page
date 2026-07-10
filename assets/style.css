@@ -48,13 +48,15 @@ body
     align-items: center;
     min-height: 100vh;
     opacity: 0;
-    transition: opacity 1.2s ease;
+    visibility: hidden;
+    transition: opacity 3s ease-in-out;
     background-size:cover;
 }
 
 .sence.is-visible
 {
     opacity: 1;
+    visibility: visible;
 }
 
 .bence
